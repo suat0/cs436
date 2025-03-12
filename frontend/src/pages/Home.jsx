@@ -7,7 +7,6 @@ const Home = () => {
       {/* Hero Section */}
       <section className="hero-section">
         <div className="hero-overlay">
-          <h3>Radiant Glamour</h3>
           <h1>Sparkle and Shine with Dazzling Jewelry</h1>
           <button className="shop-now-btn">Shop Now</button>
         </div>
