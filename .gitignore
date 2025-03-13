@@ -1,8 +1,8 @@
-<<<<<<< HEAD
+
 # Ignore Mac DS_Store files
 .DS_Store
 **/.DS_Store
-=======
+
 # Node.js dependencies
 node_modules/
 npm-debug.log*
@@ -53,4 +53,7 @@ jest-html-reporters-*.json
 
 # Ignore temporary files
 tmp/
->>>>>>> suat
+
+node_modules/
+.env
+
