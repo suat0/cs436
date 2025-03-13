@@ -18,8 +18,9 @@ const LoginSignup = () => {
     e.preventDefault(); 
   
     const url = isLogin 
-      ? "http://localhost:5000/login"  
-      : "http://localhost:5000/signup"; 
+      ? "http://localhost:5001/auth/login"  
+      : "http://localhost:5001/auth/signup";  
+
   
     const payload = isLogin
       ? { username: formData.username, password: formData.password } 

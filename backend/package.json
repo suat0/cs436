@@ -13,6 +13,7 @@
     "bcrypt": "^5.1.1",
     "bcryptjs": "^3.0.2",
     "connect-mysql2": "^2.2.6",
+    "cors": "^2.8.5",
     "express-rate-limit": "^7.5.0",
     "express-session": "^1.18.1",
     "mysql2": "^3.13.0"
