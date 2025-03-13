@@ -1,14 +1,19 @@
-import { useNavigate } from "react-router-dom";
+import React from "react";
+import "../styles.css";
 
-function Home() {
-    const navigate = useNavigate();
-
-    return (
-        <div>
-            <h1>Home Page</h1>
-            <button onClick={() => navigate("/account")}>Go to Login/Signup</button>
+const Home = () => {
+  return (
+    <div className="home-container">
+      {/* Hero Section */}
+      <section className="hero-section">
+        <div className="hero-overlay">
+          <h1>Sparkle and Shine with Dazzling Jewelry</h1>
+          <button className="shop-now-btn">Shop Now</button>
         </div>
-    );
-}
+      </section>
+    </div>
+  );
+};
+
 
 export default Home;
