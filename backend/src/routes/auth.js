@@ -43,11 +43,11 @@ router.post("/signup", async (req, res) => {
     }
 });
 
+const jwt = require("jsonwebtoken");
+
 router.post("/login", loginLimiter, async (req, res) => {
     try {
         const { username, password } = req.body;
-        //console.log("Received auth login data:", req.body);
-
         const [users] = await db.query("SELECT * FROM users WHERE username = ?", [username]);
 
         if (users.length === 0) {
@@ -60,6 +60,14 @@ router.post("/login", loginLimiter, async (req, res) => {
         if (!isMatch) {
             return res.status(401).json({ error: "Incorrect password. Please try again." });
         }
+
+        const token = jwt.sign({ id: user.id, username: user.username }, "your_secret_key", { expiresIn: "1h" });
+
+        res.cookie("token", token, {
+            httpOnly: true, // Prevents JavaScript access to the cookie
+            secure: false,  // Change to `true` in production with HTTPS
+            maxAge: 3600000 // 1 hour
+        });
 
         res.status(200).json({ message: "Login successful", username: user.username });
 

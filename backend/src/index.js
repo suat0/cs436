@@ -5,7 +5,7 @@ const path = require("path");
 const collection = require("./config");
 const bcrypt = require("bcryptjs");
 
-const authRoutes = require("./routes/authRoutes");
+const authRoutes = require("./routes/auth"); //
 const protectedRoutes = require("./routes/protectedRoutes");
 
 dotenv.config();
