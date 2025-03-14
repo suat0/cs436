@@ -18,7 +18,7 @@
   .logo {
     margin-left: 10px;
     font-family: 'Playfair Display', serif;
-    font-size: 28px;
+    font-size: 30px;
     font-weight: 400;
     cursor: pointer;
   }
@@ -37,11 +37,12 @@
   .nav-links {
     display: flex;
     list-style: none;
-    gap: 60px;
+    gap: 50px;
     position: absolute;
-    left: 50%;
+    left: 45%;
     transform: translateX(-50%);
     cursor: pointer;
+    font-size: 20px;
   }
 
   .nav-links li:hover, .mobile-menu li:hover {
@@ -55,7 +56,7 @@
     font-size: 18px;
     cursor: pointer;
     margin-left: auto; 
-    padding-right: 100px; 
+    padding-right: 65px; 
   }
 
   .nav-icons svg:hover {
