@@ -15,26 +15,26 @@ const loginLimiter = rateLimit({
 });
 router.post("/signup", async (req, res) => {
     try {
-        const { username, email, password } = req.body;
+        const { Name, Email, Password } = req.body;
         console.log("Request Body:", req.body); 
 
-        if (!username || !email || !password) {
-            return res.status(400).json({ error: "Username, email, and password are required!" });
+        if (!Name || !Email || !Password) {
+            return res.status(400).json({ error: "Name, Email, and Password are required!" });
         }
 
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            return res.status(400).json({ error: "Invalid email format. Please enter a valid email address." });
+        const EmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!EmailRegex.test(Email)) {
+            return res.status(400).json({ error: "Invalid Email format. Please enter a valid Email address." });
         }
-        const [existingUser] = await db.query("SELECT * FROM users WHERE email = ? OR username = ?", [email, username]);
+        const [existingUser] = await db.query("SELECT * FROM Users WHERE Email = ? OR Name = ?", [Email, Name]);
 
         if (existingUser.length > 0) {
-            return res.status(400).json({ error: "User with this email or username already exists" });
+            return res.status(400).json({ error: "User with this Email or Name already exists" });
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await bcrypt.hash(Password, 10);
 
-        await db.query("INSERT INTO users (username, email, password) VALUES (?, ?, ?)", [username, email, hashedPassword]);
+        await db.query("INSERT INTO Users (Name, Email, Password) VALUES (?, ?, ?)", [Name, Email, hashedPassword]);
 
         res.status(201).json({ message: "User registered successfully" });
     } catch (error) {
@@ -47,21 +47,21 @@ const jwt = require("jsonwebtoken");
 
 router.post("/login", loginLimiter, async (req, res) => {
     try {
-        const { username, password } = req.body;
-        const [users] = await db.query("SELECT * FROM users WHERE username = ?", [username]);
+        const { Name, Password } = req.body;
+        const [Users] = await db.query("SELECT * FROM Users WHERE Name = ?", [Name]);
 
-        if (users.length === 0) {
-            return res.status(404).json({ error: "User not found. Please check your username." });
+        if (Users.length === 0) {
+            return res.status(404).json({ error: "User not found. Please check your Name." });
         }
 
-        const user = users[0];
+        const user = Users[0];
 
-        const isMatch = await bcrypt.compare(password, user.password);
+        const isMatch = await bcrypt.compare(Password, user.Password);
         if (!isMatch) {
-            return res.status(401).json({ error: "Incorrect password. Please try again." });
+            return res.status(401).json({ error: "Incorrect Password. Please try again." });
         }
 
-        const token = jwt.sign({ id: user.id, username: user.username }, "your_secret_key", { expiresIn: "1h" });
+        const token = jwt.sign({ id: user.id, Name: user.Name }, "your_secret_key", { expiresIn: "1h" });
 
         res.cookie("token", token, {
             httpOnly: true, // Prevents JavaScript access to the cookie
@@ -69,7 +69,7 @@ router.post("/login", loginLimiter, async (req, res) => {
             maxAge: 3600000 // 1 hour
         });
 
-        res.status(200).json({ message: "Login successful", username: user.username });
+        res.status(200).json({ message: "Login successful", Name: user.Name });
 
     } catch (error) {
         console.error("Login Error:", error);

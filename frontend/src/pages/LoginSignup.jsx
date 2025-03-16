@@ -3,11 +3,11 @@ import "./LoginSignup.css";
 
 const LoginSignup = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const [formData, setFormData] = useState({ username: "", email: "", password: "" });
+  const [formData, setFormData] = useState({ Name: "", Email: "", Password: "" });
 
   const toggleForm = () => {
     setIsLogin(!isLogin);
-    setFormData({ username: "", email: "", password: "" });
+    setFormData({ Name: "", Email: "", Password: "" });
   };
 
   const handleChange = (e) => {
@@ -23,8 +23,8 @@ const LoginSignup = () => {
 
   
     const payload = isLogin
-      ? { username: formData.username, password: formData.password } 
-      : { username: formData.username, email: formData.email, password: formData.password }; 
+      ? { Name: formData.Name, Password: formData.Password } 
+      : { Name: formData.Name, Email: formData.Email, Password: formData.Password }; 
   
     try {
       // Send the request to the backend
@@ -58,19 +58,19 @@ const LoginSignup = () => {
           {!isLogin && (
             <div className="input-group">
               <label>Email</label>
-              <input type="email" name="email" placeholder="Enter your email" value={formData.email} onChange={handleChange} required={!isLogin}/>
+              <input type="Email" name="Email" placeholder="Enter your email" value={formData.Email} onChange={handleChange} required={!isLogin}/>
             </div>
           )}
 
           <div className="input-group">
             <label>Username</label>
-            <input type="text" name="username" placeholder="Enter your username" value={formData.username} onChange={handleChange} required/>
+            <input type="text" name="Name" placeholder="Enter your username" value={formData.Name} onChange={handleChange} required/>
           </div>
 
 
           <div className="input-group">
             <label>Password</label>
-            <input type="password" name="password" placeholder="Enter your password" value={formData.password} onChange={handleChange} required />
+            <input type="Password" name="Password" placeholder="Enter your password" value={formData.Password} onChange={handleChange} required />
           </div>
 
           <button type="submit" className="submit-btn">
