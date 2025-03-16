@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faUser, faHeart, faShoppingBag, faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 import "./Navbar.css";
+import logo from "../images/logo.png"; // Import logo image
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -14,7 +15,10 @@ const Navbar = () => {
         <FontAwesomeIcon icon={menuOpen ? faTimes : faBars} />
       </div>
 
-      <div className="logo" onClick={() => navigate("/")}>Pearl</div>
+      <div className="logo-container" onClick={() => navigate("/")}> 
+        <img src={logo} alt="Pearl Logo" className="logo" />
+        <h1 className="logo-text">Pearl</h1>
+      </div>
 
       <ul className="nav-links">
         <li onClick={() => navigate("/")}>Home</li>
