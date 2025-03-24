@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingBag, faHeart, faExchangeAlt, faSearch } from "@fortawesome/free-solid-svg-icons";
 import "../styles.css";
-import "./CategoryPage.css";
+import "../Category.css";
 
 const CategoryPage = () => {
   const { category } = useParams();
@@ -16,7 +16,7 @@ const CategoryPage = () => {
       try {
         const res = await axios.get("http://localhost:5001/getProducts");
         const filtered = res.data.filter(
-          (product) => product.category?.toLowerCase() === category.toLowerCase()
+          (product) => product.Product_Category_Id?.toLowerCase() === category.toLowerCase()
         );
         setProducts(filtered);
         setLoading(false);
@@ -36,9 +36,9 @@ const CategoryPage = () => {
       <h2 className="category-title">{category.charAt(0).toUpperCase() + category.slice(1)}</h2>
       <div className="product-grid">
         {products.map((product) => (
-          <div className="product-card" key={product.id}>
+          <div className="product-card" key={product.Id}>
             <div className="product-image">
-              <img src={product.image} alt={product.name} />
+              <img src={product.Product_Image} alt={product.Name} />
               <div className="product-actions">
                 <FontAwesomeIcon icon={faShoppingBag} />
                 <FontAwesomeIcon icon={faHeart} />
@@ -47,8 +47,8 @@ const CategoryPage = () => {
               </div>
             </div>
             <div className="product-info">
-              <h3>{product.name}</h3>
-              <p>${product.current_price}</p>
+              <h3>{product.Name}</h3>
+              <p>${product.Current_Price}</p>
             </div>
           </div>
         ))}
