@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faShoppingBag, faHeart, faExchangeAlt, faSearch } from "@fortawesome/free-solid-svg-icons";
 import "../styles.css";
+import "./CategoryPage.css";
 
 const CategoryPage = () => {
   const { category } = useParams();
@@ -34,9 +37,19 @@ const CategoryPage = () => {
       <div className="product-grid">
         {products.map((product) => (
           <div className="product-card" key={product.id}>
-            <img src={product.image} alt={product.name} className="product-img" />
-            <h3>{product.name}</h3>
-            <p>${product.current_price}</p>
+            <div className="product-image">
+              <img src={product.image} alt={product.name} />
+              <div className="product-actions">
+                <FontAwesomeIcon icon={faShoppingBag} />
+                <FontAwesomeIcon icon={faHeart} />
+                <FontAwesomeIcon icon={faExchangeAlt} />
+                <FontAwesomeIcon icon={faSearch} />
+              </div>
+            </div>
+            <div className="product-info">
+              <h3>{product.name}</h3>
+              <p>${product.current_price}</p>
+            </div>
           </div>
         ))}
       </div>
