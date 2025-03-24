@@ -69,46 +69,6 @@ body {
   color: #b8860b;
 }
 
-/* Dropdown Menu */
-.dropdown {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background: #fff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  border-radius: 5px;
-  padding: 10px 0;
-  width: 180px;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(10px);
-  transition: all 0.3s ease-in-out;
-  z-index: 1000;
-}
-
-.nav-menu li:hover .dropdown {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
-.dropdown li {
-  list-style: none;
-  padding: 10px 20px;
-  transition: background 0.3s;
-  white-space: nowrap;
-  font-family: "Poppins", sans-serif;
-}
-
-.dropdown li:hover {
-  background: #f4f4f4;
-}
-
-.dropdown li a {
-  text-decoration: none;
-  color: #333;
-  display: block;
-}
 
 /* Hero Section */
 .hero-section {

@@ -2,7 +2,7 @@
 
 .navbar {
   display: flex;
-  justify-content: space-between; /* Keeps spacing even */
+  justify-content: space-between;
   align-items: center;
   padding: 15px 20px;
   background: white;
@@ -15,24 +15,29 @@
   height: 60px;
 }
 
-
 .logo-container {
-    display: flex;
-    align-items: center;
-    gap: 1px; /* Space between logo and text */
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  cursor: pointer;
 }
 
 .logo {
-    height: 60px; /* Adjust size as needed */
-    width: auto;
+  height: 60px;
+  width: auto;
 }
 
 .logo-text {
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
-    font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  font-family: 'Playfair Display', serif;
+}
+
+.nav-center {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
 }
 
 .nav-links {
@@ -41,106 +46,118 @@
   gap: 50px;
   cursor: pointer;
   font-size: 20px;
-  justify-content: center;  /* Centers links */
-  flex-grow: 1; /* Ensures it occupies available space */
+  position: relative;
+}
+
+.nav-links li {
+  position: relative;
+}
+
+.nav-links li:hover,
+.mobile-menu li:hover {
+  color: black;
+  transform: scale(1.1);
 }
 
 
-.nav-links li:hover, .mobile-menu li:hover {
-    color: black; /* Change color on hover */
-    transform: scale(1.1); /* Slightly enlarge */
-} 
+
+.dropdown li:hover {
+  background-color: #f2f2f2;
+}
+
 
 .nav-icons {
-    display: flex;
-    gap: 30px;
-    font-size: 18px;
-    cursor: pointer;
-    margin-left: auto; 
-    padding-right: 65px; 
+  display: flex;
+  gap: 30px;
+  font-size: 18px;
+  cursor: pointer;
+  margin-left: auto;
+  padding-right: 65px;
 }
 
 .nav-icons svg:hover {
-    color: #C49B8F;
-    transform: scale(1.2);
+  color: #C49B8F;
+  transform: scale(1.2);
 }
 
 .menu-toggle {
-    display: none;
-    font-size: 22px;
-    cursor: pointer;
+  display: none;
+  font-size: 22px;
+  cursor: pointer;
 }
 
 .mobile-menu {
-    display: none;
-    position: absolute;
-    top: 60px;
-    left: 0;
-    width: 250px; /* Increase width for better layout */
-    background: white;
-    box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.1);
-    flex-direction: column;
-    text-align: left;
-    padding: 15px 0;
-    border-radius: 5px; /* Adds slight rounding */
+  display: none;
+  position: absolute;
+  top: 60px;
+  left: 0;
+  width: 250px;
+  background: white;
+  box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.1);
+  flex-direction: column;
+  text-align: left;
+  padding: 15px 0;
+  border-radius: 5px;
 }
 
 .mobile-menu li {
-    padding: 12px 20px;
-    font-size: 16px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.3s ease-in-out;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
 }
 
 .mobile-menu li:hover {
-    background: #f2f2f2; /* Light hover effect */
+  background: #f2f2f2;
 }
 
 .show-menu {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 @media (max-width: 768px) {
-    .navbar {
-        height: 50px;
-    }
-    .logo-container {
-        position: static; /* Remove absolute positioning */
-        justify-content: center; /* Center it properly */
-    }
-    .logo {
-        height: 35px; /* Reduce size for mobile */
-    }
-    .logo-text {
-        font-size: 20px; /* Reduce text size for mobile */
-    }
-    .nav-icons {
-        display: flex;
-        gap: 18px;
-        font-size: 18px;
-        cursor: pointer;
-        margin-left: auto; 
-        padding-right: 35px; 
-    }
-    .menu-toggle {
-        display: block;
-    }
-    .nav-links {
-        display: none; 
-        cursor: pointer;
-    }
-    .mobile-menu {
-        display: none; 
-    }
-    .show-menu {
-        display: flex;
-    }
+  .navbar {
+    height: 50px;
+  }
+  .logo-container {
+    position: static;
+    justify-content: center;
+  }
+  .logo {
+    height: 35px;
+  }
+  .logo-text {
+    font-size: 20px;
+  }
+  .nav-icons {
+    display: flex;
+    gap: 18px;
+    font-size: 18px;
+    cursor: pointer;
+    margin-left: auto;
+    padding-right: 35px;
+  }
+  .menu-toggle {
+    display: block;
+  }
+  .nav-links {
+    display: none;
+    cursor: pointer;
+  }
+  .mobile-menu {
+    display: none;
+  }
+  .show-menu {
+    display: flex;
+  }
 }
 
 @media (min-width: 769px) {
-    .mobile-menu {
-        display: none !important; 
-    }
+  .mobile-menu {
+    display: none !important;
+  }
 }
+
+  

@@ -1,13 +1,21 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faUser, faHeart, faShoppingBag, faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
+import {
+  faSearch,
+  faUser,
+  faHeart,
+  faShoppingBag,
+  faBars,
+  faTimes,
+} from "@fortawesome/free-solid-svg-icons";
 import "./Navbar.css";
-import logo from "../images/logo.png"; // Import logo image
+import logo from "../images/logo.png";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
+
 
   return (
     <nav className="navbar">
@@ -20,11 +28,13 @@ const Navbar = () => {
         <h1 className="logo-text">Pearl</h1>
       </div>
 
-      <ul className="nav-links">
-        <li onClick={() => navigate("/")}>Home</li>
-        <li onClick={() => navigate("/product")}>Product</li>
-        <li onClick={() => navigate("/contact")}>Contact</li>
-      </ul>
+      <div className="nav-center">
+        <ul className="nav-links">
+          <li onClick={() => navigate("/")}>Home</li>
+          <li onClick={() => navigate("/shop")}>Shop</li>
+          <li onClick={() => navigate("/contact")}>Contact</li>
+        </ul>
+      </div>
 
       <div className="nav-icons">
         <FontAwesomeIcon icon={faSearch} onClick={() => navigate("/search")} />
@@ -35,7 +45,7 @@ const Navbar = () => {
 
       <ul className={`mobile-menu ${menuOpen ? "show-menu" : ""}`}>
         <li onClick={() => { navigate("/"); setMenuOpen(false); }}>Home</li>
-        <li onClick={() => { navigate("/product"); setMenuOpen(false); }}>Product</li>
+        <li onClick={() => { navigate("/shop"); setMenuOpen(false); }}>Shop</li>
         <li onClick={() => { navigate("/contact"); setMenuOpen(false); }}>Contact</li>
       </ul>
     </nav>
