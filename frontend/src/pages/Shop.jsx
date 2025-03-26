@@ -16,7 +16,6 @@ const Shop = () => {
 
   return (
     <div className="shop-page">
-      <h2 className="shop-title">Explore Categories</h2>
       <div className="category-grid">
         {categories.map((cat) => (
           <div

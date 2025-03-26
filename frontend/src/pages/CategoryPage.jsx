@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingBag, faHeart, faExchangeAlt, faSearch } from "@fortawesome/free-solid-svg-icons";
 import "../styles.css";
-import "../Category.css";
+import "./CategoryPage.css";
 
 const CategoryPage = () => {
   const { category } = useParams();
