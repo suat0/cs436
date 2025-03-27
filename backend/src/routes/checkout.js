@@ -59,7 +59,7 @@ router.post('/', authenticate, async (req, res) => {
 
     for (const item of cartItems) {
       const [product] = await db.query('SELECT * FROM products WHERE id = ?', [item.productId]);
-      console.log('Product Query Result:', product); /
+      console.log('Product Query Result:', product); 
 
       if (!product || product.length === 0 || product[0].quantity < item.quantity) {
         await db.query('ROLLBACK');
