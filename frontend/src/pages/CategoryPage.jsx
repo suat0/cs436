@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingBag, faHeart, faExchangeAlt, faSearch } from "@fortawesome/free-solid-svg-icons";
 import "../styles.css";
@@ -7,6 +7,7 @@ import "./CategoryPage.css";
 
 const CategoryPage = () => {
   const { category } = useParams();
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -17,7 +18,7 @@ const CategoryPage = () => {
         Id: 1,
         Name: "Gold Ring",
         Product_Category_Id: "rings",
-        Product_Image: "https://via.placeholder.com/300x400?text=Gold+Ring",
+        Product_Image: "https://sainttracy.com/cdn/shop/products/JUNEDIAMONDENGAGEMENTRING_09fa3e82-c58a-47a4-992a-c53bceddf4d4_700x.jpg?v=1682327491",
         Current_Price: 120.0,
       },
       {
@@ -96,7 +97,11 @@ const CategoryPage = () => {
       <h2 className="category-title">{category.charAt(0).toUpperCase() + category.slice(1)}</h2>
       <div className="product-grid">
         {products.map((product) => (
-          <div className="product-card" key={product.Id}>
+          <div
+            className="product-card"
+            key={product.Id}
+            onClick={() => navigate(`/product/${product.Id}`)}
+          >
             <div className="product-image">
               <img src={product.Product_Image} alt={product.Name} />
               <div className="product-actions">
