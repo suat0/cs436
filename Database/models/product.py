@@ -21,3 +21,4 @@ class Product(db.Model):
     Warranty_Status = db.Column(db.String(100))
     Distributor_Info = db.Column(db.String(255))
     Date = db.Column(db.DateTime, default=datetime.utcnow)
+    Product_Image = db.Column(db.String(255))
