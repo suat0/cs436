@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams , useNavigate} from 'react-router-dom';
 import './Product.css';
 
 const sampleProducts = [
@@ -24,6 +24,7 @@ const sampleProducts = [
 
 const ProductPage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [wishlist, setWishlist] = useState(false);
@@ -47,6 +48,10 @@ const ProductPage = () => {
     setWishlist(!wishlist);
   };
 
+  const goToComments = () => {
+    navigate(`/comments/${id}`);
+  };
+
   return (
     <div className="product-container">
       <img src={product.Product_Image} alt={product.Name} className="product-image" />
@@ -65,10 +70,13 @@ const ProductPage = () => {
           <button onClick={() => setQuantity(q => q + 1)}>+</button>
         </div>
         <div className="actions">
-          <button onClick={addToCart}>Add to Cart</button>
-          <button onClick={toggleWishlist} className={wishlist ? 'wishlisted' : ''}>
-            {wishlist ? 'Wishlisted' : 'Add to Wishlist'}
-          </button>
+            <button onClick={addToCart} className="add-to-cart">Add to Cart</button>
+            <div className="sub-actions">
+                <button onClick={toggleWishlist} className={wishlist ? 'wishlisted' : ''}>
+                    {wishlist ? 'Wishlisted' : 'Add to Wishlist'}
+                </button>
+                <button onClick={goToComments} className="comments-button">View Comments</button>
+            </div>
         </div>
       </div>
     </div>

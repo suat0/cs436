@@ -9,7 +9,7 @@
   
   .product-image {
     width: 100%;
-    max-width: 450px; /* Increase max size */
+    max-width: 450px;
     aspect-ratio: 1 / 1;
     object-fit: cover;
     border-radius: 12px;
@@ -41,27 +41,66 @@
   }
   
   .actions {
-    margin: 15px 0;
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
   }
   
-  .actions button {
-    margin-right: 10px;
-    margin-bottom: 10px;
-    padding: 10px 20px;
+  .add-to-cart {
+    padding: 14px 32px;
+    font-weight: bold;
+    background-color: #e0e0e0;
+    color: #333;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
+    margin-bottom: 15px;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    max-width: 360px;
   }
   
-  .actions button:hover {
-    background: #C49B8F;
+  .add-to-cart:hover {
+    background-color: #C49B8F;
   }
   
-  .actions .wishlisted {
-    background-color: #A87C71;
+  .sub-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-start;
+    width: 100%;
+    flex-wrap: wrap;
+    max-width: 360px;
+  }
+  
+  .sub-actions button {
+    flex: 1;
+    padding: 12px 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    background-color: #e0e0e0;
+    color: #333;
+    transition: background-color 0.3s ease;
+  }
+  
+  .sub-actions button:hover {
+    background-color: #C49B8F;
+  }
+  
+  .wishlisted {
+    background-color: #C49B8F !important;
+    color: #fff !important;
   }
   
   @media (max-width: 768px) {
+    .actions{
+        align-items: center;
+        width: 100%;
+    }
+
     .product-container {
       flex-direction: column;
       align-items: center;
@@ -81,18 +120,15 @@
     .quantity-selector {
       justify-content: center;
     }
-  
-    .actions {
-      display: flex;
+    
+    .sub-actions {
       flex-direction: column;
-      align-items: center;
+      gap: 10px;
+      justify-content: center;
     }
-  
-    .actions button {
-      margin: 5px 0;
-      width: 80%;
-      max-width: 250px;
-    }
-   
+    .sub-actions button {
+        width: 100%;
+      }
+
   }
   
