@@ -4,9 +4,11 @@ import Home from "./pages/Home";
 import LoginSignup from "./pages/LoginSignup";
 import Orders from "./pages/Orders";
 import Navbar from "./components/Navbar";
+import Cart from "./pages/Cart";
 import Shop from "./pages/Shop";
 import CategoryPage from "./pages/CategoryPage";
 import Product from "./pages/Product";
+
 
 function App() {
   const appContainerStyle = {
@@ -29,6 +31,7 @@ function App() {
           <Route path="/account" element={<LoginSignup />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/shop" element={<Shop />} />
+            <Route path="/cart" element={<Cart />} />
           <Route path="/category/:category" element={<CategoryPage />} />
           <Route path="/product/:id" element={<Product />} />
         </Routes>
