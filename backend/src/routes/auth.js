@@ -1,6 +1,6 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
-const db = require("../config"); 
+const db = require("../controllers/db"); 
 const rateLimit = require("express-rate-limit");
 
 
