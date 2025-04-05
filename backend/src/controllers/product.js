@@ -1,4 +1,5 @@
 const Product = require('../models/Product');
+const db = require('../controllers/db');
 const { validationResult } = require('express-validator');
 
 class ProductController {
@@ -13,7 +14,7 @@ class ProductController {
         offset: req.query.page ? parseInt(req.query.limit) * (parseInt(req.query.page) - 1) : null
       };
 
-      const products = await Product.getAll(req.db, options);
+      const products = await Product.getAll(db, options);
       
       return res.status(200).json({
         success: true,
@@ -34,7 +35,7 @@ class ProductController {
   async getProductById(req, res) {
     try {
       const productId = parseInt(req.params.id);
-      const product = await Product.getById(req.db, productId);
+      const product = await Product.getById(db, productId);
       
       if (!product) {
         return res.status(404).json({
@@ -45,9 +46,9 @@ class ProductController {
 
       // Get additional product info if requested
       if (req.query.withDetails === 'true') {
-        const category = await Product.getCategory(req.db, productId);
-        const comments = await Product.getComments(req.db, productId);
-        const avgRating = await Product.getAverageRating(req.db, productId);
+        const category = await Product.getCategory(db, productId);
+        const comments = await Product.getComments(db, productId);
+        const avgRating = await Product.getAverageRating(db, productId);
         
         return res.status(200).json({
           success: true,
@@ -107,7 +108,7 @@ class ProductController {
         // Price will be set by sales manager later
       };
 
-      const newProduct = await Product.create(req.db, productData);
+      const newProduct = await Product.create(db, productData);
 
       return res.status(201).json({
         success: true,
@@ -146,7 +147,7 @@ class ProductController {
       }
 
       const productId = parseInt(req.params.id);
-      const product = await Product.getById(req.db, productId);
+      const product = await Product.getById(db, productId);
       
       if (!product) {
         return res.status(404).json({
@@ -193,7 +194,7 @@ class ProductController {
         if (req.body.visibility !== undefined) product.visibility = req.body.visibility;
       }
 
-      await product.update(req.db);
+      await product.update(db);
 
       return res.status(200).json({
         success: true,
@@ -222,7 +223,7 @@ class ProductController {
       }
 
       const productId = parseInt(req.params.id);
-      const product = await Product.getById(req.db, productId);
+      const product = await Product.getById(db, productId);
       
       if (!product) {
         return res.status(404).json({
@@ -231,7 +232,7 @@ class ProductController {
         });
       }
 
-      await Product.delete(req.db, productId);
+      await Product.delete(db, productId);
 
       return res.status(200).json({
         success: true,
@@ -263,7 +264,7 @@ class ProductController {
         offset: req.query.page ? parseInt(req.query.limit) * (parseInt(req.query.page) - 1) : 0
       };
 
-      const products = await Product.searchProducts(req.db, searchTerm, options);
+      const products = await Product.searchProducts(db, searchTerm, options);
       
       return res.status(200).json({
         success: true,
@@ -301,7 +302,7 @@ class ProductController {
       }
 
       const productId = parseInt(req.params.id);
-      const product = await Product.getById(req.db, productId);
+      const product = await Product.getById(db, productId);
       
       if (!product) {
         return res.status(404).json({
@@ -316,7 +317,7 @@ class ProductController {
       product.setPrice(price);
       product.cost_price = costPrice;
       
-      await product.update(req.db);
+      await product.update(db);
 
       return res.status(200).json({
         success: true,
@@ -361,7 +362,7 @@ class ProductController {
       }
 
       const productId = parseInt(req.params.id);
-      const product = await Product.getById(req.db, productId);
+      const product = await Product.getById(db, productId);
       
       if (!product) {
         return res.status(404).json({
@@ -387,7 +388,7 @@ class ProductController {
         product.quantity_in_stock = Math.max(0, changeAmount);
       }
       
-      await product.update(req.db);
+      await product.update(db);
 
       return res.status(200).json({
         success: true,
@@ -421,7 +422,7 @@ class ProductController {
       }
 
       const productId = parseInt(req.params.id);
-      const product = await Product.getById(req.db, productId);
+      const product = await Product.getById(db, productId);
       
       if (!product) {
         return res.status(404).json({
@@ -439,7 +440,7 @@ class ProductController {
       }
 
       product.visibility = !product.visibility;
-      await product.update(req.db);
+      await product.update(db);
 
       return res.status(200).json({
         success: true,
