@@ -12,161 +12,54 @@ const CategoryPage = () => {
   const { addToCart } = useCart();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const sampleProducts = [
-      // Rings
-      {
-        Id: 1,
-        Name: "Gold Ring",
-        Product_Category_Id: "rings",
-        Product_Image: "https://sainttracy.com/cdn/shop/products/JUNEDIAMONDENGAGEMENTRING_09fa3e82-c58a-47a4-992a-c53bceddf4d4_700x.jpg?v=1682327491",
-        Current_Price: 120.0,
-        Quantity_In_Stocks: 10,
-        Description: "A stunning gold ring with diamond setting."
-      },
-      {
-        Id: 2,
-        Name: "Emerald Ring",
-        Product_Category_Id: "rings",
-        Product_Image: "https://via.placeholder.com/300x400?text=Emerald+Ring",
-        Current_Price: 145.0,
-        Quantity_In_Stocks: 5,
-        Description: "A beautiful emerald ring."
-      },
-      {
-        Id: 3,
-        Name: "Vintage Silver Ring",
-        Product_Category_Id: "rings",
-        Product_Image: "https://via.placeholder.com/300x400?text=Silver+Ring",
-        Current_Price: 90.0,
-        Quantity_In_Stocks: 8,
-        Description: "A vintage-style silver ring."
-      },
-
-      // Necklaces
-      {
-        Id: 4,
-        Name: "Silver Necklace",
-        Product_Category_Id: "necklaces",
-        Product_Image: "https://via.placeholder.com/300x400?text=Silver+Necklace",
-        Current_Price: 95.0,
-        Quantity_In_Stocks: 12,
-        Description: "Elegant silver necklace."
-      },
-      {
-        Id: 5,
-        Name: "Pearl Choker",
-        Product_Category_Id: "necklaces",
-        Product_Image: "https://via.placeholder.com/300x400?text=Pearl+Choker",
-        Current_Price: 135.0,
-        Quantity_In_Stocks: 6,
-        Description: "Classic pearl choker necklace."
-      },
-      {
-        Id: 6,
-        Name: "Gold Pendant Necklace",
-        Product_Category_Id: "necklaces",
-        Product_Image: "https://via.placeholder.com/300x400?text=Gold+Pendant",
-        Current_Price: 160.0,
-        Quantity_In_Stocks: 7,
-        Description: "Gold pendant necklace with delicate chain."
-      },
-
-      // Bracelets
-      {
-        Id: 7,
-        Name: "Diamond Bracelet",
-        Product_Category_Id: "bracelets",
-        Product_Image: "https://via.placeholder.com/300x400?text=Diamond+Bracelet",
-        Current_Price: 150.0,
-        Quantity_In_Stocks: 4,
-        Description: "Diamond-studded bracelet."
-      },
-      {
-        Id: 8,
-        Name: "Beaded Bracelet",
-        Product_Category_Id: "bracelets",
-        Product_Image: "https://via.placeholder.com/300x400?text=Beaded+Bracelet",
-        Current_Price: 75.0,
-        Quantity_In_Stocks: 10,
-        Description: "Colorful beaded bracelet."
-      },
-      {
-        Id: 9,
-        Name: "Cuff Bracelet",
-        Product_Category_Id: "bracelets",
-        Product_Image: "https://via.placeholder.com/300x400?text=Cuff+Bracelet",
-        Current_Price: 110.0,
-        Quantity_In_Stocks: 9,
-        Description: "Bold metallic cuff bracelet."
-      },
-    ];
-
-    const filtered = sampleProducts.filter(
-      (product) => product.Product_Category_Id?.toLowerCase() === category.toLowerCase()
-    );
-    setProducts(filtered);
-    setLoading(false);
-  }, [category]);
-
-  if (loading) return <p>Loading products...</p>;
-
-  return (
-    <div className="category-page">
-      <h2 className="category-title">{category.charAt(0).toUpperCase() + category.slice(1)}</h2>
-      <div className="product-grid">
-        {products.map((product) => (
-          <div className="product-card" key={product.Id}>
-            <div className="product-image" onClick={() => navigate(`/product/${product.Id}`)}>
-              <img src={product.Product_Image} alt={product.Name} />
-            </div>
-            <div className="product-actions">
-              <FontAwesomeIcon icon={faShoppingBag} onClick={() => addToCart(product)} />
-              <FontAwesomeIcon icon={faHeart} />
-              <FontAwesomeIcon icon={faExchangeAlt} />
-              <FontAwesomeIcon icon={faSearch} />
-            </div>
-            <div className="product-info">
-              <h3>{product.Name}</h3>
-              <p>${product.Current_Price}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
-
-export default CategoryPage;
-
-
-
-
-/*import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { useParams } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faShoppingBag, faHeart, faExchangeAlt, faSearch } from "@fortawesome/free-solid-svg-icons";
-import "../styles.css";
-import "./CategoryPage.css";
-
-const CategoryPage = () => {
-  const { category } = useParams();
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await axios.get("http://localhost:5001/getProducts");
-        const filtered = res.data.filter(
-          (product) => product.Product_Category_Id?.toLowerCase() === category.toLowerCase()
+        // Fetch all active categories (like in Shop.jsx)
+        const catRes = await fetch('/api/categories?active=true', {
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+        });
+        if (!catRes.ok) {
+          throw new Error(`Error fetching categories: ${catRes.status}`);
+        }
+        const catData = await catRes.json();
+        if (!catData.success || !catData.data) {
+          throw new Error(catData.message || "Failed to fetch categories");
+        }
+        // Find the category whose name matches the URL param (ignoring case)
+        const currentCategory = catData.data.find(
+          (cat) => cat.name.toLowerCase() === category.toLowerCase()
         );
-        setProducts(filtered);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching products:", error);
+        if (!currentCategory) {
+          setProducts([]);
+          setLoading(false);
+          return;
+        }
+        // Now fetch products for this category using its id
+        const prodRes = await fetch(`/api/categories/${currentCategory.id}/products`, {
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+        });
+        if (!prodRes.ok) {
+          throw new Error(`Error fetching products: ${prodRes.status}`);
+        }
+        const prodData = await prodRes.json();
+        if (!prodData.success || !prodData.data) {
+          throw new Error(prodData.message || "Failed to fetch products");
+        }
+        // The response returns an object with category and products fields
+        setProducts(prodData.data.products);
+      } catch (err) {
+        console.error("Error fetching products:", err);
+        setError(err.message);
+      } finally {
         setLoading(false);
       }
     };
@@ -175,25 +68,31 @@ const CategoryPage = () => {
   }, [category]);
 
   if (loading) return <p>Loading products...</p>;
+  if (error) return <p>Error: {error}</p>;
 
   return (
     <div className="category-page">
-      <h2 className="category-title">{category.charAt(0).toUpperCase() + category.slice(1)}</h2>
+      <h2 className="category-title">
+        {category.charAt(0).toUpperCase() + category.slice(1)}
+      </h2>
       <div className="product-grid">
         {products.map((product) => (
-          <div className="product-card" key={product.Id}>
-            <div className="product-image">
-              <img src={product.Product_Image} alt={product.Name} />
-              <div className="product-actions">
-                <FontAwesomeIcon icon={faShoppingBag} />
-                <FontAwesomeIcon icon={faHeart} />
-                <FontAwesomeIcon icon={faExchangeAlt} />
-                <FontAwesomeIcon icon={faSearch} />
-              </div>
+          <div className="product-card" key={product.id}>
+            <div
+              className="product-image"
+              onClick={() => navigate(`/product/${product.id}`)}
+            >
+              <img src={product.image_url} alt={product.name} />
+            </div>
+            <div className="product-actions">
+              <FontAwesomeIcon icon={faShoppingBag} onClick={() => addToCart(product)} />
+              <FontAwesomeIcon icon={faHeart} />
+              <FontAwesomeIcon icon={faExchangeAlt} />
+              <FontAwesomeIcon icon={faSearch} />
             </div>
             <div className="product-info">
-              <h3>{product.Name}</h3>
-              <p>${product.Current_Price}</p>
+              <h3>{product.name}</h3>
+              <p>${product.price}</p>
             </div>
           </div>
         ))}
@@ -203,4 +102,3 @@ const CategoryPage = () => {
 };
 
 export default CategoryPage;
-*/
