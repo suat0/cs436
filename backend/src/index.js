@@ -6,7 +6,7 @@ const cors = require("cors"); // 🟢 ADD THIS
 
 const authRoutes = require("./routes/auth");
 const protectedRoutes = require("./routes/protectedRoutes");
-//const productRoutes = require("./routes/product");
+const productRoutes = require("./routes/product");
 const categoryRoutes = require("./routes/category");
 
 dotenv.config();
@@ -23,7 +23,7 @@ app.use(cookieParser());
 
 app.use("/auth", authRoutes);
 app.use("/dashboard", protectedRoutes);
-//app.use('/api/products', productRoutes);
+app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
 
 // Serve React frontend
