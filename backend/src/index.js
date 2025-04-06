@@ -36,6 +36,9 @@ app.use('/api/payment', paymentRoutes);
 
 app.use('/api/checkout', checkoutRoutes);
 
+app.use('/api/products', productRoutes);
+app.use('/api/categories', categoryRoutes);
+
 // Serve React frontend
 app.use(express.static(path.join(__dirname, "../../frontend/build")));
 
