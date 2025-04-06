@@ -12,6 +12,12 @@
    ```bash
    npm install
    ```
+3. Navigate to the `./backend/src` folder.
+4. Install dependencies and build the project:
+   ```bash
+   npm install
+   ```
+
 ## Database
 1. Setup new MySQL connection (e.g., MySQL Workbench), by default use username `root` and password `1234`. 
 2. Run `database-schema.sql` (file located in `./backend/db_queries`)
