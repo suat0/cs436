@@ -1,0 +1,134 @@
+/* Cart Page Styles */
+
+.cart-page {
+    padding: 60px 40px;
+    background-color: #f8f5f2;
+    min-height: 100vh;
+    font-family: "Poppins", sans-serif;
+  }
+  
+  .cart-title {
+    font-size: 32px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 40px;
+    margin-top: 70px;
+    font-family: "Playfair Display", serif;
+  }
+  
+  .cart-items {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .cart-item {
+    display: flex;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .cart-item-img {
+    width: 150px;
+    object-fit: cover;
+  }
+  
+  .cart-item-info {
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .cart-item-info h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+  
+  .cart-item-info p {
+    font-size: 16px;
+    color: #b8860b;
+    margin-bottom: 10px;
+  }
+  
+  .cart-qty {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .cart-qty button {
+    padding: 5px 10px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    background: #e0e0e0;
+    border-radius: 4px;
+    transition: background 0.2s;
+  }
+  
+  .cart-qty button:hover {
+    background: #ccc;
+  }
+  
+  .remove-btn {
+    background: transparent;
+    color: #d33;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    align-self: flex-start;
+  }
+  
+  .cart-total {
+    max-width: 800px;
+    margin: 40px auto 0;
+    text-align: right;
+  }
+  
+  .cart-total h3 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .checkout-btn {
+    padding: 12px 24px;
+    font-size: 16px;
+    background: #333;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .checkout-btn:hover {
+    background: #555;
+  }
+  
+  @media (max-width: 768px) {
+    .cart-item {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .cart-item-img {
+      width: 100%;
+      height: auto;
+    }
+  
+    .cart-item-info {
+      text-align: center;
+      align-items: center;
+    }
+  
+    .cart-total {
+      text-align: center;
+    }
+  } 

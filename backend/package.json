@@ -16,6 +16,8 @@
     "cors": "^2.8.5",
     "express-rate-limit": "^7.5.0",
     "express-session": "^1.18.1",
-    "mysql2": "^3.13.0"
+    "express-validator": "^7.2.1",
+    "mysql2": "^3.13.0",
+    "src": "^1.1.2"
   }
 }

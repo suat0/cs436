@@ -5,6 +5,11 @@ import LoginSignup from "./pages/LoginSignup";
 import Orders from "./pages/Orders";
 import Navbar from "./components/Navbar";
 import Comment from  "./pages/Comment";
+import Cart from "./pages/Cart";
+import Shop from "./pages/Shop";
+import CategoryPage from "./pages/CategoryPage";
+import Product from "./pages/Product";
+
 
 function App() {
   const appContainerStyle = {
@@ -15,19 +20,24 @@ function App() {
 
   const mainContentStyle = {
     flex: 1, 
+    paddingTop: "80px"
   };
 
   return (
     <div style={appContainerStyle}>
       <Navbar />
-      <div style={mainContentStyle}>
+      <main style={mainContentStyle}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/account" element={<LoginSignup />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/comments" element={<Comment />} />
+          <Route path="/shop" element={<Shop />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/category/:category" element={<CategoryPage />} />
+          <Route path="/product/:id" element={<Product />} />
         </Routes>
-      </div>
+      </main>
       <Footer />
     </div>
   );
