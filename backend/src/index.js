@@ -9,6 +9,7 @@ const authRoutes = require("./routes/auth");
 const protectedRoutes = require("./routes/protectedRoutes");
 const productRoutes = require("./routes/product");
 const categoryRoutes = require("./routes/category");
+const cartRoutes = require("./routes/cart");
 
 dotenv.config();
 const app = express();
@@ -38,6 +39,7 @@ app.use('/api/checkout', checkoutRoutes);
 
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/cart', cartRoutes);
 
 // Serve React frontend
 app.use(express.static(path.join(__dirname, "../../frontend/build")));
