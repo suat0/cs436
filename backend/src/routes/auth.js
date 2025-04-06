@@ -13,10 +13,11 @@ const loginLimiter = rateLimit({
     standardHeaders: true, // Return rate limit info in headers
     legacyHeaders: false, // Disable X-RateLimit headers (use standard headers instead)
 });
+
 router.post("/signup", async (req, res) => {
     try {
         const { Name, Email, Password } = req.body;
-        console.log("Request Body:", req.body); 
+        //console.log("Request Body:", req.body); 
 
         if (!Name || !Email || !Password) {
             return res.status(400).json({ error: "Name, Email, and Password are required!" });
@@ -49,26 +50,26 @@ router.post("/login", loginLimiter, async (req, res) => {
     try {
         const { Name, Password } = req.body;
         const [Users] = await db.query("SELECT * FROM Users WHERE Name = ?", [Name]);
-
+        
         if (Users.length === 0) {
             return res.status(404).json({ error: "User not found. Please check your Name." });
         }
 
         const user = Users[0];
-
-        const isMatch = await bcrypt.compare(Password, user.Password);
+        
+        const isMatch = await bcrypt.compare(Password, user.password);
         if (!isMatch) {
             return res.status(401).json({ error: "Incorrect Password. Please try again." });
         }
-
+        
         const token = jwt.sign({ id: user.id, Name: user.Name }, "your_secret_key", { expiresIn: "1h" });
-
+        
         res.cookie("token", token, {
             httpOnly: true, // Prevents JavaScript access to the cookie
             secure: false,  // Change to `true` in production with HTTPS
             maxAge: 3600000 // 1 hour
         });
-
+        
         res.status(200).json({ message: "Login successful", Name: user.Name });
 
     } catch (error) {
