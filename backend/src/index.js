@@ -4,8 +4,6 @@ const dotenv = require("dotenv");
 const path = require("path");
 const cors = require("cors"); 
 
-const collection = require("./config");
-const bcrypt = require("bcryptjs");
 
 const authRoutes = require("./routes/auth");
 const protectedRoutes = require("./routes/protectedRoutes");

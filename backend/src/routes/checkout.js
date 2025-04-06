@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../config'); 
+const db = require('../controllers/db'); 
 const authenticate = require('../middleware/authMiddleware');
 
 // Mask card details to protect sensitive data
