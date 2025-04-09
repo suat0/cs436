@@ -4,6 +4,6 @@ const checkoutController = require('../controllers/checkout');
 const authenticate = require('../middleware/authMiddleware');
 
 
-router.post('/', authenticate, checkoutController.checkout );
+router.post('/', /*authenticate,*/ checkoutController.checkout );
 
 module.exports = router;

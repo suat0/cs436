@@ -29,7 +29,7 @@ app.use(cookieParser());
 
 app.use("/auth", authRoutes);
 
-app.use(authenticate);
+//app.use(authenticate);
 app.use('/api/payment', paymentRoutes);
 
 app.use('/api/checkout', checkoutRoutes);
