@@ -85,18 +85,7 @@ const CategoryPage = () => {
               <img src={product.image_url} alt={product.name} />
             </div>
             <div className="product-actions">
-              <FontAwesomeIcon
-                icon={faShoppingBag}
-                onClick={() =>
-                  addToCart({
-                    Id: product.id,
-                    Name: product.name,
-                    Product_Image: product.image_url,
-                    Current_Price: product.price,
-                  }, 1)
-                }
-              />
-
+              <FontAwesomeIcon icon={faShoppingBag} onClick={() => addToCart(product)} />
               <FontAwesomeIcon icon={faHeart} />
               <FontAwesomeIcon icon={faExchangeAlt} />
               <FontAwesomeIcon icon={faSearch} />
