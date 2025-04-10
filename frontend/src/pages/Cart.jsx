@@ -1,8 +1,10 @@
 import React from "react";
 import { useCart } from "../context/CartContext";
+import { useNavigate } from "react-router-dom";
 import "./Cart.css";
 
 const CartPage = () => {
+  const navigate = useNavigate();
   const { cartItems, updateQuantity, removeFromCart } = useCart();
 
   const total = cartItems.reduce(
@@ -38,7 +40,7 @@ const CartPage = () => {
       </div>
       <div className="cart-total">
         <h3>Total: ${total.toFixed(2)}</h3>
-        <button className="checkout-btn">Proceed to Checkout</button>
+        <button className="checkout-btn" onClick={() => navigate("/checkout")}>Proceed to Checkout</button>      
       </div>
     </div>
   );
