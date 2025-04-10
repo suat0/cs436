@@ -3,13 +3,6 @@ const router = express.Router();
 const cartController = require('../controllers/cart');
 const { body } = require('express-validator');
 
-// Simulate a logged in user or guest session for testing purposes
-router.use((req, res, next) => {
-    req.user = { id: 1 };
-    // req.sessionID = '12345';
-    next();
-});
-
 // Get the current cart (for user or guest)
 router.get('/', cartController.getCart.bind(cartController));
 
