@@ -6,21 +6,18 @@ const cors = require("cors");
 
 
 const authRoutes = require("./routes/auth");
-const protectedRoutes = require("./routes/protectedRoutes");
 const productRoutes = require("./routes/product");
 const categoryRoutes = require("./routes/category");
 const cartRoutes = require("./routes/cart");
-
-dotenv.config();
-const app = express();
 const checkoutRoutes = require('./routes/checkout');
-// Import payment routes
 const paymentRoutes = require('./routes/payment');
+
 const authenticate = require('./middleware/authMiddleware');
 
 
 // Register payment API route
-
+dotenv.config();
+const app = express();
 
 app.use(cors({
     origin: "http://localhost:3000", // Allow all origins temporarily (change in production)
@@ -32,7 +29,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use("/auth", authRoutes);
-app.use("/dashboard", protectedRoutes);
+
+//app.use(authenticate);
 app.use('/api/payment', paymentRoutes);
 
 app.use('/api/checkout', checkoutRoutes);
