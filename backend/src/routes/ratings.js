@@ -1,12 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../controllers/db');
+const isAuthenticated = require('../middleware/authMiddleware');
 
 
 // Submit a new rating
-router.post('/', async (req, res) => {
-  const { product_id, user_id, rating } = req.body;
-
+router.post('/', isAuthenticated, async (req, res) => {
+  const { product_id, rating } = req.body;
+  const user_id = req.user.id; 
+  
   if (!product_id || !user_id || !rating) {
     return res.status(400).json({ success: false, message: 'Missing fields' });
   }

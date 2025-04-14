@@ -1,19 +1,35 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../controllers/db');
+const isAuthenticated = require('../middleware/authMiddleware');
 
-//----FYI-------Product manager is not currently available so change the situation of comment manually
-//----can use, UPDATE Comments SET status = 'approved' WHERE id = "ID of the comment"; on mySQL
+
 
 // POST /api/comments
-router.post('/', async (req, res) => {
-  const { product_id, user_id, comment } = req.body;
+router.post('/',isAuthenticated, async (req, res) => {
+  const { product_id, comment } = req.body;
+  const user_id = req.user.id;
+  
 
   if (!product_id || !user_id || !comment) {
     return res.status(400).json({ success: false, message: 'Missing fields' });
   }
 
   try {
+
+    // Check if this user already commented on this product
+    const [existing] = await db.execute(
+    'SELECT id FROM Comments WHERE product_id = ? AND user_id = ?',
+    [product_id, user_id]
+    );
+    
+    if (existing.length > 0) {
+      return res.status(400).json({
+          success: false,
+          message: 'You have already commented on this product.',
+      });
+    }
+
     await db.execute(
       `INSERT INTO Comments (product_id, user_id, comment, status) VALUES (?, ?, ?, 'pending')`,
       [product_id, user_id, comment]
@@ -29,18 +45,78 @@ router.post('/', async (req, res) => {
 // GET /api/comments/product/:id
 router.get('/product/:id', async (req, res) => {
   const productId = req.params.id;
-
+/*
   try {
     const [comments] = await db.execute(
       `
-      SELECT c.*, u.name AS user_name
-      FROM Comments c
-      JOIN Users u ON c.user_id = u.id
-      WHERE c.product_id = ? AND c.status = 'approved'
-      ORDER BY c.date DESC
+        (
+          SELECT c.comment, c.date, u.name AS user_name, r.rating
+          FROM Comments c
+          JOIN Users u ON c.user_id = u.id
+          LEFT JOIN Ratings r ON r.user_id = c.user_id AND r.product_id = c.product_id
+          WHERE c.product_id = ? AND c.status = 'pending'
+        )
+
+        UNION
+
+        (
+          SELECT NULL AS comment, r.created_at AS date, u.name AS user_name, r.rating
+          FROM Ratings r
+          JOIN Users u ON r.user_id = u.id
+          LEFT JOIN Comments c 
+          ON c.user_id = r.user_id AND c.product_id = r.product_id AND c.status = 'pending'
+          WHERE r.product_id = ? AND c.id IS NULL
+        )
+
+        ORDER BY date DESC;
+      `,
+      [productId, productId]
+    );
+
+
+
+
+      try {
+    const [comments] = await db.execute(
+      `
+        SELECT c.comment, c.date, u.name AS user_name, r.rating
+        FROM Comments c
+        JOIN Users u ON c.user_id = u.id
+        LEFT JOIN Ratings r ON r.user_id = c.user_id AND r.product_id = c.product_id
+        WHERE c.product_id = ? AND c.status = 'pending'
+        ORDER BY date DESC;
       `,
       [productId]
     );
+*/
+
+
+try {
+  const [comments] = await db.execute(
+    `
+      (
+        SELECT c.comment, c.date, u.name AS user_name, r.rating
+        FROM Comments c
+        JOIN Users u ON c.user_id = u.id
+        LEFT JOIN Ratings r ON r.user_id = c.user_id AND r.product_id = c.product_id
+        WHERE c.product_id = ? AND c.status = 'pending'
+      )
+
+      UNION
+
+      (
+        SELECT NULL AS comment, r.created_at AS date, u.name AS user_name, r.rating
+        FROM Ratings r
+        JOIN Users u ON r.user_id = u.id
+        LEFT JOIN Comments c 
+        ON c.user_id = r.user_id AND c.product_id = r.product_id AND c.status = 'pending'
+        WHERE r.product_id = ? AND c.id IS NULL
+      )
+
+      ORDER BY date DESC;
+    `,
+    [productId, productId]
+  );
 
     res.json({ success: true, comments });
   } catch (err) {
