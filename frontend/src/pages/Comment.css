@@ -99,5 +99,15 @@
     margin-bottom: 0.5rem;
   }
   
-  
+  .error-message {
+    background-color: #ffe6e6;        /* soft red background */
+    color: #d8000c;                   /* strong red text */
+    border-left: 4px solid #d8000c;   /* red left border for emphasis */
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
   
