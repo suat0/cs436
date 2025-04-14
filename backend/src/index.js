@@ -3,6 +3,7 @@ const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
 const path = require("path");
 const cors = require("cors"); 
+const orderRoutes = require('./routes/orders');
 
 
 const authRoutes = require("./routes/auth");
@@ -33,6 +34,7 @@ app.use("/auth", authRoutes);
 app.use('/api/payment', paymentRoutes);
 
 app.use('/api/checkout', checkoutRoutes);
+app.use('/api/orders', orderRoutes);
 
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
