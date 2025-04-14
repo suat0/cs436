@@ -153,7 +153,10 @@ export default function Comment() {
         </div>
 
         <div className="responses-section">
-          <p>{reviews.length} Responses</p>
+          <p>
+            {reviews.length} Responses
+            {average !== null && ` — Average Rating: ${average}/5`}
+          </p>
           {reviews.map((r, i) => (
             <div className="single-review" key={i}>
               {r.rating != null && (
