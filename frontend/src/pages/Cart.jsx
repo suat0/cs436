@@ -56,7 +56,7 @@ const CartPage = () => {
       if (response.ok && data.success) {
         refreshCart();
       } else {
-        alert(data.error || "Failed to update quantity.");
+        alert(data.error || data.message || "Failed to update quantity.");
       }
     } catch (err) {
       console.error("Error updating quantity:", err);
