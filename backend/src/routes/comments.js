@@ -116,7 +116,7 @@ try {
   const [comments] = await db.execute(
     `
       (
-        SELECT c.comment, c.date, u.name AS user_name, r.rating
+        SELECT c.comment, c.date, u.name AS user_name, r.rating, c.user_id
         FROM Comments c
         JOIN Users u ON c.user_id = u.id
         LEFT JOIN Ratings r ON r.user_id = c.user_id AND r.product_id = c.product_id
@@ -126,7 +126,7 @@ try {
       UNION
 
       (
-        SELECT NULL AS comment, r.created_at AS date, u.name AS user_name, r.rating
+        SELECT NULL AS comment, r.created_at AS date, u.name AS user_name, r.rating, r.user_id
         FROM Ratings r
         JOIN Users u ON r.user_id = u.id
         LEFT JOIN Comments c 
@@ -145,5 +145,55 @@ try {
     res.status(500).json({ success: false, message: 'Server error' });
   }
 });
+
+// PUT /api/comments - Update user's comment
+router.put('/', isAuthenticated, async (req, res) => {
+  const { product_id, comment } = req.body;
+  const user_id = req.user.id;
+
+  if (!product_id || !comment) {
+    return res.status(400).json({ success: false, message: 'Missing fields' });
+  }
+
+  try {
+    const [existing] = await db.execute(
+      'SELECT id FROM Comments WHERE product_id = ? AND user_id = ?',
+      [product_id, user_id]
+    );
+
+    if (existing.length === 0) {
+      return res.status(404).json({ success: false, message: 'Comment not found' });
+    }
+
+    await db.execute(
+      'UPDATE Comments SET comment = ?, date = CURRENT_TIMESTAMP WHERE product_id = ? AND user_id = ?',
+      [comment, product_id, user_id]
+    );
+
+    res.json({ success: true, message: 'Comment updated' });
+  } catch (err) {
+    console.error('Error updating comment:', err);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
+
+// GET /api/comments/me - Get current logged-in user info
+router.get('/me', isAuthenticated, (req, res) => {
+  const user = req.user;
+
+  if (!user) {
+    return res.status(401).json({ success: false, message: 'Not authenticated' });
+  }
+
+  res.json({
+    success: true,
+    user: {
+      id: user.id,
+      name: user.name
+    }
+  });
+});
+
 
 module.exports = router;

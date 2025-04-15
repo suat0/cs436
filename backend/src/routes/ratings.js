@@ -82,4 +82,36 @@ router.get('/:productId', async (req, res) => {
   }
 });
 
+// PUT /api/ratings - Update user's rating
+router.put('/', isAuthenticated, async (req, res) => {
+  const { product_id, rating } = req.body;
+  const user_id = req.user.id;
+
+  if (!product_id || !rating) {
+    return res.status(400).json({ success: false, message: 'Missing fields' });
+  }
+
+  try {
+    const [existing] = await db.execute(
+      'SELECT id FROM Ratings WHERE product_id = ? AND user_id = ?',
+      [product_id, user_id]
+    );
+
+    if (existing.length === 0) {
+      return res.status(404).json({ success: false, message: 'Rating not found' });
+    }
+
+    await db.execute(
+      'UPDATE Ratings SET rating = ? WHERE product_id = ? AND user_id = ?',
+      [rating, product_id, user_id]
+    );    
+
+    res.json({ success: true, message: 'Rating updated' });
+  } catch (err) {
+    console.error('Error updating rating:', err);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
+
 module.exports = router;

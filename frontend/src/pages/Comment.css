@@ -111,3 +111,27 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   }
   
+  .edit-button {
+    margin-left: 10px;
+    padding: 4px 12px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: white;
+    background-color: #c2978e;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    outline: none;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .edit-button:hover {
+    background-color: #a87b74;
+  }
+  
+  .edit-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(200, 151, 142, 0.4); /* soft shadow when focused */
+  }
+  
+  
