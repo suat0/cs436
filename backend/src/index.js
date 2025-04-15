@@ -9,8 +9,10 @@ const orderRoutes = require('./routes/orders');
 const authRoutes = require("./routes/auth");
 const productRoutes = require("./routes/product");
 const categoryRoutes = require("./routes/category");
+const cartRoutes = require("./routes/cart");
 const checkoutRoutes = require('./routes/checkout');
 const paymentRoutes = require('./routes/payment');
+const session = require("express-session");
 
 const authenticate = require('./middleware/authMiddleware');
 
@@ -21,12 +23,13 @@ const app = express();
 
 app.use(cors({
     origin: "http://localhost:3000", // Allow all origins temporarily (change in production)
-   
+
     credentials: true
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(session({ secret: process.env.SESSION_SECRET || "your_secret_key", resave: false, saveUninitialized: true, }));
 
 app.use("/auth", authRoutes);
 app.use('/api/orders', orderRoutes);
@@ -38,6 +41,7 @@ app.use('/api/checkout', checkoutRoutes);
 
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/cart', cartRoutes);
 
 // Serve React frontend
 app.use(express.static(path.join(__dirname, "../../frontend/build")));

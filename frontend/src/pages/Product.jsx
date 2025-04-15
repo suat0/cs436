@@ -43,11 +43,37 @@ const ProductPage = () => {
   if (loading) return <p>Loading product...</p>;
   if (error || !product) return <p>Product not found.</p>;
 
-  const addToCart = () => {
-    if (quantity <= product.quantity_in_stock) {
-      alert(`${quantity} item(s) added to cart.`);
-    } else {
+  const addToCart = async () => {
+    if (quantity > product.quantity_in_stock) {
       alert('Quantity exceeds stock available.');
+      return;
+    }
+    try {
+      // Retrieve the current cart (user or guest)
+      const cartResponse = await fetch(`/api/cart`, {
+        method: 'GET',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
+      });
+      const cartData = await cartResponse.json();
+      if (!cartResponse.ok) {
+        throw new Error(cartData.error || 'Failed to retrieve cart.');
+      }
+      const cartId = cartData.cart.id;
+      // Add item to the cart
+      const addItemResponse = await fetch(`/api/cart/items`, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ product_id: product.id, quantity })
+      });
+      const addItemData = await addItemResponse.json();
+      if (addItemResponse.ok) {
+        alert(`${quantity} item(s) added to cart.`);
+      } else {
+        alert(addItemData.error || 'Failed to add item to cart.');
+      }
+    } catch (err) {
+      console.error('Error adding to cart:', err);
+      alert('Error adding to cart.');
     }
   };
 
