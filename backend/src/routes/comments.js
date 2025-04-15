@@ -5,28 +5,48 @@ const isAuthenticated = require('../middleware/authMiddleware');
 
 
 
+// Helper to check if user bought the product
+async function userPurchasedProduct(user_id, product_id) {
+  const [result] = await db.execute(
+    `SELECT COUNT(*) as count
+     FROM Orders o
+     JOIN Order_Items oi ON o.id = oi.order_id
+     WHERE o.user_id = ? AND oi.product_id = ? AND o.status = 'delivered'`,
+    [user_id, product_id]
+  );
+  return result[0].count > 0;
+}
+
 // POST /api/comments
-router.post('/',isAuthenticated, async (req, res) => {
+// POST /api/comments
+router.post('/', isAuthenticated, async (req, res) => {
   const { product_id, comment } = req.body;
   const user_id = req.user.id;
-  
 
   if (!product_id || !user_id || !comment) {
     return res.status(400).json({ success: false, message: 'Missing fields' });
   }
 
   try {
+    // Check if user purchased the product
+    const hasPurchased = await userPurchasedProduct(user_id, product_id);
+    if (!hasPurchased) {
+      return res.status(403).json({
+        success: false,
+        message: 'You can only comment on products you have purchased.'
+      });
+    }
 
     // Check if this user already commented on this product
     const [existing] = await db.execute(
-    'SELECT id FROM Comments WHERE product_id = ? AND user_id = ?',
-    [product_id, user_id]
+      'SELECT id FROM Comments WHERE product_id = ? AND user_id = ?',
+      [product_id, user_id]
     );
-    
+
     if (existing.length > 0) {
       return res.status(400).json({
-          success: false,
-          message: 'You have already commented on this product.',
+        success: false,
+        message: 'You have already commented on this product.',
       });
     }
 
@@ -41,6 +61,7 @@ router.post('/',isAuthenticated, async (req, res) => {
     res.status(500).json({ success: false, message: 'Server error' });
   }
 });
+
 
 // GET /api/comments/product/:id
 router.get('/product/:id', async (req, res) => {

@@ -4,6 +4,18 @@ const db = require('../controllers/db');
 const isAuthenticated = require('../middleware/authMiddleware');
 
 
+// Helper command toheck if user purchased the product
+async function userPurchasedProduct(user_id, product_id) {
+  const [result] = await db.execute(
+    `SELECT COUNT(*) as count
+     FROM Orders o
+     JOIN Order_Items oi ON o.id = oi.order_id
+     WHERE o.user_id = ? AND oi.product_id = ? AND o.status = 'delivered'`, //askhjdvbsakjhdbsahj
+    [user_id, product_id]
+  );
+  return result[0].count > 0;
+}
+
 // Submit a new rating
 router.post('/', isAuthenticated, async (req, res) => {
   const { product_id, rating } = req.body;
@@ -14,6 +26,15 @@ router.post('/', isAuthenticated, async (req, res) => {
   }
 
   try {
+    // Check if user has purchased the product
+    const hasPurchased = await userPurchasedProduct(user_id, product_id);
+    if (!hasPurchased) {
+      return res.status(403).json({
+        success: false,
+        message: 'You can only rate products you have purchased.'
+      });
+    }
+
     // Prevent duplicate rating
     const [existing] = await db.execute(
       'SELECT id FROM Ratings WHERE product_id = ? AND user_id = ?',
@@ -24,7 +45,7 @@ router.post('/', isAuthenticated, async (req, res) => {
       return res.status(400).json({ success: false, message: 'You already rated this product.' });
     }
 
-    // Insert rating
+    // Insert new rating
     await db.execute(
       'INSERT INTO Ratings (product_id, user_id, rating) VALUES (?, ?, ?)',
       [product_id, user_id, rating]
