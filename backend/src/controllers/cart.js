@@ -101,6 +101,19 @@ async getCart(req, res) {
       const { product_id, quantity } = req.body;
       const { type, value } = this.getIdentifier(req);
       let query, params;
+
+      // Get stock info for the product
+      const [productRows] = await db.execute(
+        'SELECT quantity_in_stock FROM Products WHERE id = ?',
+        [product_id]
+      );
+  
+      if (productRows.length === 0) {
+        return res.status(404).json({ success: false, message: 'Product not found' });
+      }
+  
+      const stockAvailable = productRows[0].quantity_in_stock;
+
       // Retrieve the existing cart
       if (type === 'user') {
         query = 'SELECT * FROM Shopping_Cart WHERE user_id = ?';
@@ -136,14 +149,30 @@ async getCart(req, res) {
         'SELECT * FROM Cart_Items WHERE cart_id = ? AND product_id = ?',
         [cart.id, product_id]
       );
+
       let item;
       if (existingItems.length > 0) {
         // Update the quantity if the item exists
         item = existingItems[0];
         const newQuantity = parseInt(item.quantity) + parseInt(quantity);
+
+        if (newQuantity > stockAvailable) {
+          return res.status(400).json({
+            success: false,
+            message: `Cannot add more than ${stockAvailable} units of this product to the cart`
+          });
+        }
+
         await db.execute('UPDATE Cart_Items SET quantity = ? WHERE id = ?', [newQuantity, item.id]);
         item.quantity = newQuantity;
       } else {
+
+        if (parseInt(quantity) > stockAvailable) {
+          return res.status(400).json({
+            success: false,
+            message: `Only ${stockAvailable} units of this product are available`
+          });
+        }
         // Insert a new cart item
         const [result] = await db.execute(
           'INSERT INTO Cart_Items (cart_id, product_id, quantity) VALUES (?, ?, ?)',
@@ -186,6 +215,23 @@ async getCart(req, res) {
       if (itemRows.length === 0) {
         return res.status(404).json({ success: false, message: 'Cart item not found' });
       }
+
+      const item = itemRows[0];
+      const [productRows] = await db.execute(
+        'SELECT quantity_in_stock FROM Products WHERE id = ?',
+        [item.product_id]
+      );
+      if (productRows.length === 0) {
+        return res.status(404).json({ success: false, message: 'Associated product not found' });
+      }
+      const stockAvailable = productRows[0].quantity_in_stock;
+      if (parseInt(quantity) > stockAvailable) {
+        return res.status(400).json({
+          success: false,
+          message: `Cannot set quantity to ${quantity}. Only ${stockAvailable} units available in stock.`
+        });
+      }
+      
       await db.execute('UPDATE Cart_Items SET quantity = ? WHERE id = ?', [quantity, itemId]);
       return res.status(200).json({ success: true, message: 'Cart item updated successfully' });
     } catch (error) {
