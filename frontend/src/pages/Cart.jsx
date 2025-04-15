@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./Cart.css";
 
 const CartPage = () => {
+  const navigate = useNavigate();
   const [cart, setCart] = useState(null);
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -119,7 +120,7 @@ const CartPage = () => {
       </div>
       <div className="cart-total">
         <h3>Total: ${total.toFixed(2)}</h3>
-        <button className="checkout-btn">Proceed to Checkout</button>
+        <button className="checkout-btn" onClick={() => navigate("/checkout")}>Proceed to Checkout</button>      
       </div>
     </div>
   );
