@@ -8,6 +8,7 @@ const cors = require("cors");
 const authRoutes = require("./routes/auth");
 const productRoutes = require("./routes/product");
 const categoryRoutes = require("./routes/category");
+const searchRoutes = require("./routes/search");
 const cartRoutes = require("./routes/cart");
 const checkoutRoutes = require('./routes/checkout');
 const paymentRoutes = require('./routes/payment');
@@ -39,6 +40,7 @@ app.use('/api/checkout', checkoutRoutes);
 
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use("/api/search", searchRoutes);
 app.use('/api/cart', cartRoutes);
 
 // Serve React frontend
