@@ -258,12 +258,10 @@ class Product {
       }
       
       if (options.limit) {
-        query += ' LIMIT ?';
-        params.push(options.limit);
+        query += ` LIMIT ${Number(options.limit)}`;
         
         if (options.offset) {
-          query += ' OFFSET ?';
-          params.push(options.offset);
+          query += ` OFFSET ${Number(options.offset)}`;
         }
       }
       
