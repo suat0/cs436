@@ -14,8 +14,18 @@ import logo from "../images/logo.png";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    // Only navigate if the search term is not empty
+    if (searchTerm.trim() !== "") {
+      navigate(`/search/${encodeURIComponent(searchTerm.trim())}`);
+      // Optionally clear the search input
+      setSearchTerm("");
+    }
+  };
 
   return (
     <nav className="navbar">
@@ -37,7 +47,20 @@ const Navbar = () => {
       </div>
 
       <div className="nav-icons">
-        <FontAwesomeIcon icon={faSearch} onClick={() => navigate("/search")} />
+        {/* Search form */}
+        <form onSubmit={handleSearchSubmit} className="search-form">
+          <input
+            type="text"
+            placeholder="Search products..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+          <button type="submit" className="search-button">
+            <FontAwesomeIcon icon={faSearch} />
+          </button>
+        </form>
+
         <FontAwesomeIcon icon={faUser} onClick={() => navigate("/account")} />
         <FontAwesomeIcon icon={faHeart} onClick={() => navigate("/wishlist")} />
         <FontAwesomeIcon icon={faShoppingBag} onClick={() => navigate("/cart")} />
