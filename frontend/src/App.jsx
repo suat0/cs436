@@ -7,6 +7,7 @@ import Navbar from "./components/Navbar";
 import Cart from "./pages/Cart";
 import Shop from "./pages/Shop";
 import CategoryPage from "./pages/CategoryPage";
+import SearchPage from "./pages/SearchPage";
 import Product from "./pages/Product";
 
 
@@ -33,6 +34,7 @@ function App() {
           <Route path="/shop" element={<Shop />} />
             <Route path="/cart" element={<Cart />} />
           <Route path="/category/:category" element={<CategoryPage />} />
+          <Route path="/search/:search_query" element={<SearchPage />} />
           <Route path="/product/:id" element={<Product />} />
         </Routes>
       </main>
