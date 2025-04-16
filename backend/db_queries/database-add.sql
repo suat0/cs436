@@ -21,7 +21,13 @@ INSERT INTO Products (name, category_id, price, cost_price, quantity_in_stock, d
 -- Bracelets (category_id = 3)
 ('Diamond Bracelet', 3, 150.00, 75.00, 4, 'Diamond-studded bracelet.', 'DB-2023', 'DB12351', TRUE, 'Diamond Elite Distributors', TRUE, 'https://via.placeholder.com/300x400?text=Diamond+Bracelet'),
 ('Beaded Bracelet', 3, 75.00, 37.50, 10, 'Colorful beaded bracelet.', 'BB-2023', 'BB12352', TRUE, 'Artisan Beads Co.', TRUE, 'https://via.placeholder.com/300x400?text=Beaded+Bracelet'),
-('Cuff Bracelet', 3, 110.00, 55.00, 9, 'Bold metallic cuff bracelet.', 'CB-2023', 'CB12353', TRUE, 'Metal Works Ltd.', TRUE, 'https://via.placeholder.com/300x400?text=Cuff+Bracelet');
+('Cuff Bracelet', 3, 110.00, 55.00, 9, 'Bold metallic cuff bracelet.', 'CB-2023', 'CB12353', TRUE, 'Metal Works Ltd.', TRUE, 'https://via.placeholder.com/300x400?text=Cuff+Bracelet'),
+('A Bracelet', 3, 2.00, 1.00, 3, 'bracelet.', 'CB-2024', 'CB12354', FALSE, '-', TRUE, 'https://via.placeholder.com/300x400?text=A+Bracelet'),
+('B Bracelet', 3, 2.00, 1.00, 3, 'bracelet.', 'CB-2025', 'CB12355', FALSE, '-', TRUE, 'https://via.placeholder.com/300x400?text=B+Bracelet'),
+('C Bracelet', 3, 2.00, 1.00, 3, 'bracelet.', 'CB-2026', 'CB12356', FALSE, '-', TRUE, 'https://via.placeholder.com/300x400?text=C+Bracelet'),
+('D Bracelet', 3, 2.00, 1.00, 3, 'bracelet.', 'CB-2027', 'CB12357', FALSE, '-', TRUE, 'https://via.placeholder.com/300x400?text=D+Bracelet'),
+('E Bracelet', 3, 2.00, 1.00, 3, 'bracelet.', 'CB-2028', 'CB12358', FALSE, '-', TRUE, 'https://via.placeholder.com/300x400?text=E+Bracelet'),
+('F Bracelet', 3, 2.00, 1.00, 3, 'bracelet.', 'CB-2029', 'CB12359', FALSE, '-', TRUE, 'https://via.placeholder.com/300x400?text=F+Bracelet');
 
 SELECT * FROM users;
 SELECT * FROM categories;
