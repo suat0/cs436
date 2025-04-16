@@ -33,7 +33,7 @@ router.post('/', isAuthenticated, async (req, res) => {
     if (!hasPurchased) {
       return res.status(403).json({
         success: false,
-        message: 'You can only comment on products you have purchased.'
+        message: 'You can only comment on products you have purchased which have been delivered.'
       });
     }
 
