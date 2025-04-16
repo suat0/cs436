@@ -14,6 +14,7 @@ export default function Comment() {
   const [errorMessage, setErrorMessage] = useState('');
   const [currentUserId, setCurrentUserId] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [editingReviewId, setEditingReviewId] = useState(null);
 
 
   // Fetch current user
@@ -99,6 +100,7 @@ export default function Comment() {
       setRating(0);
       setHover(0);
       setIsEditing(false);
+      setEditingReviewId(null);
 
       // Refresh comments
       const res = await fetch(`http://localhost:5001/api/comments/product/${productId}`);
@@ -190,14 +192,25 @@ export default function Comment() {
               <small>by {r.user_name}</small>
               {r.user_id === currentUserId && (
                 <button
-                  className="edit-button"
-                  onClick={() => {
-                  setComment(r.comment || '');
-                  setRating(r.rating || 0);
-                  setIsEditing(true);  // Add this useState too
-              }}
+                className="edit-button"
+                onClick={() => {
+                  if (isEditing && editingReviewId === r.id) {
+                    // Cancel editing
+                    setIsEditing(false);
+                    setEditingReviewId(null);
+                    setComment('');
+                    setRating(0);
+                    setHover(0);
+                  } else {
+                    // Start editing
+                    setComment(r.comment || '');
+                    setRating(r.rating || 0);
+                    setIsEditing(true);
+                    setEditingReviewId(r.id);
+                  }
+                }}
               >
-               Edit
+                {isEditing && editingReviewId === r.id ? 'Cancel Editing' : 'Edit'}
               </button>
               )}
 
