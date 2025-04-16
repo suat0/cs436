@@ -13,7 +13,7 @@ const SearchPage = () => {
     const fetchSearchResults = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/search?q=${encodeURIComponent(search_query)}`, {
+        const response = await fetch(`/api/products/search?q=${encodeURIComponent(search_query)}`, {
           headers: {
             "Accept": "application/json",
             "Content-Type": "application/json"

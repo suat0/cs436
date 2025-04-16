@@ -7,11 +7,11 @@ const { body } = require('express-validator');
 // GET /api/products - Get all products (with optional filters)
 router.get('/', productController.getAllProducts);
 
-// GET /api/products/:id - Get a single product by ID
-router.get('/:id', productController.getProductById);
-
 // GET /api/products/search - Search for products
 router.get('/search', productController.searchProducts);
+
+// GET /api/products/:id - Get a single product by ID
+router.get('/:id', productController.getProductById);
 
 // Routes without authentication middleware
 
