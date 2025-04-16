@@ -46,30 +46,47 @@ const Navbar = () => {
         </ul>
       </div>
 
-      <div className="nav-icons">
-        {/* Search form */}
-        <form onSubmit={handleSearchSubmit} className="search-form">
-          <input
-            type="text"
-            placeholder="Search products..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
-          />
-          <button type="submit" className="search-button">
-            <FontAwesomeIcon icon={faSearch} />
-          </button>
-        </form>
+      <div className="nav-right">
+  <form onSubmit={handleSearchSubmit} className="search-form">
+    <input
+      type="text"
+      placeholder="Search products..."
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+      className="search-input"
+    />
+    <button type="submit" className="search-button">
+      <FontAwesomeIcon icon={faSearch} />
+    </button>
+  </form>
 
-        <FontAwesomeIcon icon={faUser} onClick={() => navigate("/account")} />
-        <FontAwesomeIcon icon={faHeart} onClick={() => navigate("/wishlist")} />
-        <FontAwesomeIcon icon={faShoppingBag} onClick={() => navigate("/cart")} />
-      </div>
+  <div className="nav-icons">
+    <FontAwesomeIcon icon={faUser} onClick={() => navigate("/account")} />
+    <FontAwesomeIcon icon={faHeart} onClick={() => navigate("/wishlist")} />
+    <FontAwesomeIcon icon={faShoppingBag} onClick={() => navigate("/cart")} />
+  </div>
+</div>
+
 
       <ul className={`mobile-menu ${menuOpen ? "show-menu" : ""}`}>
         <li onClick={() => { navigate("/"); setMenuOpen(false); }}>Home</li>
         <li onClick={() => { navigate("/shop"); setMenuOpen(false); }}>Shop</li>
         <li onClick={() => { navigate("/contact"); setMenuOpen(false); }}>Contact</li>
+
+        <li className="mobile-search">
+    <form onSubmit={handleSearchSubmit} className="search-form mobile-search-form">
+      <input
+        type="text"
+        placeholder="Search products..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="search-input"
+      />
+      <button type="submit" className="search-button">
+        <FontAwesomeIcon icon={faSearch} />
+      </button>
+    </form>
+  </li>
       </ul>
     </nav>
   );
