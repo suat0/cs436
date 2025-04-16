@@ -15,6 +15,8 @@ const paymentRoutes = require('./routes/payment');
 const session = require("express-session");
 
 const authenticate = require('./middleware/authMiddleware');
+const invoiceRoutes = require('./routes/invoice');
+
 
 
 // Register payment API route
@@ -42,6 +44,7 @@ app.use('/api/checkout', checkoutRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/cart', cartRoutes);
+app.use('/api/invoices', invoiceRoutes);
 
 // Serve React frontend
 app.use(express.static(path.join(__dirname, "../../frontend/build")));

@@ -9,6 +9,7 @@ import Shop from "./pages/Shop";
 import CategoryPage from "./pages/CategoryPage";
 import Product from "./pages/Product";
 import CheckoutPage from "./pages/Checkout";
+import OrderConfirmation from "./pages/OrderConfirmation"
 
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/category/:category" element={<CategoryPage />} />
           <Route path="/product/:id" element={<Product />} />
+          <Route path="/checkout/:orderId" element={<OrderConfirmation />} />
         </Routes>
       </main>
       <Footer />
