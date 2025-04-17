@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import "./SearchPage.css"; // Create and style this file as needed
+import "./SearchPage.css"; // Make sure styles below are in this file
 
 const SearchPage = () => {
   const { search_query } = useParams();
   const [products, setProducts] = useState([]);
+  const [sort_by, setSortBy] = useState("name");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ const SearchPage = () => {
     const fetchSearchResults = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/products/search?q=${encodeURIComponent(search_query)}`, {
+        const response = await fetch(`/api/products/search?q=${encodeURIComponent(search_query)}&sort_by=${sort_by}`, {
           headers: {
             "Accept": "application/json",
             "Content-Type": "application/json"
@@ -37,18 +38,33 @@ const SearchPage = () => {
     };
 
     fetchSearchResults();
-  }, [search_query]);
+  }, [search_query, sort_by]);
 
   if (loading) return <p>Loading search results...</p>;
   if (error) return <p>Error: {error}</p>;
 
   return (
     <div className="search-page">
-      <h2 className="search-title">
-        Search Results for "{search_query}"
-      </h2>
+      {/* Flex container for title + sort */}
+      <div className="search-header">
+        <h2 className="search-title">Search Results for "{search_query}"</h2>
+        <div className="sort-bar">
+          <label>Sort by: </label>
+          <select value={sort_by} onChange={(e) => setSortBy(e.target.value)}>
+            <option value="name">Name (A–Z)</option>
+            <option value="name_desc">Name (Z–A)</option>
+            <option value="price">Price (Low to High)</option>
+            <option value="price_desc">Price (High to Low)</option>
+            <option value="popularity">Popularity (High to Low)</option>
+            <option value="popularity_asc">Popularity (Low to High)</option>
+          </select>
+        </div>
+      </div>
+
       {products.length === 0 ? (
-        <p>No products found matching your search.</p>
+        <div className="no-results-wrapper">
+          <p className="no-results">No products found matching your search.</p>
+        </div>
       ) : (
         <div className="product-grid">
           {products.map((product) => (
