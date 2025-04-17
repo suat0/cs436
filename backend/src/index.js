@@ -2,28 +2,26 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
 const path = require("path");
-const cors = require("cors"); 
-const orderRoutes = require('./routes/orders');
-
+const cors = require("cors");
+const session = require("express-session");
 
 const authRoutes = require("./routes/auth");
 const productRoutes = require("./routes/product");
 const categoryRoutes = require("./routes/category");
 const cartRoutes = require("./routes/cart");
+const ratingsRoutes = require('./routes/ratings');
+const commentsRoutes = require('./routes/comments');
 const checkoutRoutes = require('./routes/checkout');
 const paymentRoutes = require('./routes/payment');
-const session = require("express-session");
-
+const orderRoutes = require('./routes/orders');
 const authenticate = require('./middleware/authMiddleware');
 
-
-// Register payment API route
 dotenv.config();
 const app = express();
 
 app.use(cors({
     origin: "http://localhost:3000", // Allow all origins temporarily (change in production)
-
+   
     credentials: true
 }));
 app.use(express.json());
@@ -32,16 +30,14 @@ app.use(cookieParser());
 app.use(session({ secret: process.env.SESSION_SECRET || "your_secret_key", resave: false, saveUninitialized: true, }));
 
 app.use("/auth", authRoutes);
-app.use('/api/orders', orderRoutes);
-
-//app.use(authenticate);
-app.use('/api/payment', paymentRoutes);
-
-app.use('/api/checkout', checkoutRoutes);
-
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/cart', cartRoutes);
+app.use('/api/ratings', ratingsRoutes);
+app.use('/api/comments', commentsRoutes);
+app.use('/api/checkout', checkoutRoutes);
+app.use('/api/payment', paymentRoutes);
+app.use('/api/orders', orderRoutes);
 
 // Serve React frontend
 app.use(express.static(path.join(__dirname, "../../frontend/build")));
