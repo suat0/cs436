@@ -49,6 +49,24 @@ export default function Comment() {
     }
   }, [productId, currentUserId]); 
 
+  // Guest users: fetch public comments and ratings
+useEffect(() => {
+  if (currentUserId === null) {
+    // Fetch only approved comments and public ratings
+    fetch(`http://localhost:5001/api/comments/product/${productId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) setReviews(data.comments);
+      });
+
+    fetch(`http://localhost:5001/api/ratings/${productId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) setAverage(data.average);
+      });
+  }
+}, [productId, currentUserId]);
+
   const handlePost = async () => {
     if (comment.trim() === '' && rating === 0) return;
 
