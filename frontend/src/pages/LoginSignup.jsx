@@ -7,6 +7,8 @@ const LoginSignup = () => {
 
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({ Name: "", Email: "", Password: "" });
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const toggleForm = () => {
     setIsLogin(!isLogin);
@@ -23,35 +25,51 @@ const LoginSignup = () => {
     const url = isLogin 
       ? "http://localhost:5001/auth/login"  
       : "http://localhost:5001/auth/signup";  
-
   
     const payload = isLogin
       ? { Name: formData.Name, Password: formData.Password } 
       : { Name: formData.Name, Email: formData.Email, Password: formData.Password }; 
   
     try {
-      // Send the request to the backend
       const response = await fetch(url, {
         method: "POST", 
         headers: { "Content-Type": "application/json" }, 
         body: JSON.stringify(payload), 
-        credentials: "include", // Needed for session-based authentication (if backend uses cookies)
+        credentials: "include", 
       });
   
       const data = await response.json(); 
   
       if (response.ok) {
-        alert(isLogin ? "Login successful!" : "Signup successful!"); 
-        // on successful login
-
-        // Go back to the previous page or home if there isn't one
-        navigate(-1);
+        setErrorMessage("");
+        setSuccessMessage(isLogin ? "Login successful!" : "Signup successful!");
+  
+        // Clear success message after 3 seconds
+        setTimeout(() => {
+          setSuccessMessage("");
+        }, 3000);
+  
+        // Navigate after 1.5 seconds (gives user time to read message)
+        setTimeout(() => {
+          navigate(-1);
+        }, 1500);
       } else {
-        alert(data.error); 
+        setSuccessMessage("");
+        setErrorMessage(data.error || "An error occurred");
+  
+        // Clear error message after 3 seconds
+        setTimeout(() => {
+          setErrorMessage("");
+        }, 3000);
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("Something went wrong"); 
+      setErrorMessage("Something went wrong");
+  
+      // Clear message after 3 seconds even on exception
+      setTimeout(() => {
+        setErrorMessage("");
+      }, 3000);
     }
   };
   
@@ -61,6 +79,9 @@ const LoginSignup = () => {
       <div className={`form-container ${isLogin ? "login-mode" : "signup-mode"}`}>
         <h2>{isLogin ? "Login" : "Sign Up"}</h2>
         
+        {errorMessage && <div className="message error">{errorMessage}</div>}
+        {successMessage && <div className="message success">{successMessage}</div>}
+
         <form onSubmit={handleSubmit}>
           {!isLogin && (
             <div className="input-group">
