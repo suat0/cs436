@@ -149,17 +149,19 @@ router.put('/', isAuthenticated, async (req, res) => {
       return res.status(404).json({ success: false, message: 'Comment not found' });
     }
 
+    // Reset status to pending after update
     await db.execute(
-      'UPDATE Comments SET comment = ?, date = CURRENT_TIMESTAMP WHERE product_id = ? AND user_id = ?',
+      'UPDATE Comments SET comment = ?, date = CURRENT_TIMESTAMP, status = "pending" WHERE product_id = ? AND user_id = ?',
       [comment, product_id, user_id]
     );
 
-    res.json({ success: true, message: 'Comment updated' });
+    res.json({ success: true, message: 'Comment updated and marked as pending' });
   } catch (err) {
     console.error('Error updating comment:', err);
     res.status(500).json({ success: false, message: 'Server error' });
   }
 });
+
 
 
 // GET /api/comments/me - Get current logged-in user info
