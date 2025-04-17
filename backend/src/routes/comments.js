@@ -115,26 +115,41 @@ router.get('/product/:id', async (req, res) => {
 try {
   const [comments] = await db.execute(
     `
-      (
-        SELECT c.comment, c.date, u.name AS user_name, r.rating, c.user_id
-        FROM Comments c
-        JOIN Users u ON c.user_id = u.id
-        LEFT JOIN Ratings r ON r.user_id = c.user_id AND r.product_id = c.product_id
-        WHERE c.product_id = ? AND c.status = 'pending'
-      )
+(
+  -- Approved comments (with optional rating)
+  SELECT 
+    c.comment, 
+    c.date, 
+    u.name AS user_name, 
+    r.rating, 
+    c.user_id
+  FROM Comments c
+  JOIN Users u ON c.user_id = u.id
+  LEFT JOIN Ratings r 
+    ON r.user_id = c.user_id AND r.product_id = c.product_id
+  WHERE c.product_id = ? AND c.status = 'approved'
+)
 
-      UNION
+UNION
 
-      (
-        SELECT NULL AS comment, r.created_at AS date, u.name AS user_name, r.rating, r.user_id
-        FROM Ratings r
-        JOIN Users u ON r.user_id = u.id
-        LEFT JOIN Comments c 
-        ON c.user_id = r.user_id AND c.product_id = r.product_id AND c.status = 'pending'
-        WHERE r.product_id = ? AND c.id IS NULL
-      )
+(
+  -- Ratings that do not have an approved comment
+  SELECT 
+    NULL AS comment, 
+    r.created_at AS date, 
+    u.name AS user_name, 
+    r.rating, 
+    r.user_id
+  FROM Ratings r
+  JOIN Users u ON r.user_id = u.id
+  LEFT JOIN Comments c 
+    ON c.user_id = r.user_id AND c.product_id = r.product_id AND c.status = 'approved'
+  WHERE r.product_id = ? AND c.id IS NULL
+)
 
-      ORDER BY date DESC;
+ORDER BY date DESC;
+
+
     `,
     [productId, productId]
   );
