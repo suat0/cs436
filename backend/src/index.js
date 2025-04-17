@@ -3,10 +3,9 @@ const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
 const path = require("path");
 const cors = require("cors");
-
+const session = require("express-session");
 
 const authRoutes = require("./routes/auth");
-const protectedRoutes = require("./routes/protectedRoutes");
 const productRoutes = require("./routes/product");
 const categoryRoutes = require("./routes/category");
 const cartRoutes = require("./routes/cart");
@@ -31,7 +30,6 @@ app.use(cookieParser());
 app.use(session({ secret: process.env.SESSION_SECRET || "your_secret_key", resave: false, saveUninitialized: true, }));
 
 app.use("/auth", authRoutes);
-app.use("/dashboard", protectedRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/cart', cartRoutes);
