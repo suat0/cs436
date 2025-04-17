@@ -116,3 +116,248 @@
     }
   }
   
+  /* Modal Styles */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .modal {
+    background: white;
+    border-radius: 12px;
+    width: 440px;
+    max-width: 90%;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    margin: 0 auto;
+    position: relative;
+  }
+  
+  .modal-content {
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .modal-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+  }
+  
+  .bank-logo {
+    color: #000;
+  }
+  
+  .payment-provider {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .provider-logo {
+    height: 24px;
+    width: auto;
+  }
+  
+  .id-check {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .auth-content {
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto;
+  }
+  
+  .auth-content h2 {
+    font-size: 24px;
+    font-weight: 500;
+    color: #000;
+    margin: 0 0 16px;
+  }
+  
+  .auth-message {
+    color: #666;
+    font-size: 15px;
+    line-height: 1.5;
+    margin-bottom: 24px;
+  }
+  
+  .confirmation-input {
+    margin: 24px 0;
+    width: 100%;
+  }
+  
+  .confirmation-input label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 8px;
+  }
+  
+  .confirmation-input input {
+    width: 100%;
+    padding: 16px;
+    font-size: 20px;
+    letter-spacing: 8px;
+    text-align: center;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    background: #fff;
+    transition: all 0.3s ease;
+    font-family: monospace;
+    box-sizing: border-box;
+  }
+  
+  .confirmation-input input:focus {
+    outline: none;
+    border-color: #000;
+  }
+  
+  .confirm-button {
+    width: 100%;
+    padding: 16px;
+    background: #000;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    margin: 24px 0;
+  }
+  
+  .resend-button {
+    width: 100%;
+    padding: 8px;
+    background: none;
+    border: none;
+    color: #666;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  
+  /* Error state */
+  .error-message {
+    color: #dc3545;
+    font-size: 14px;
+    margin-top: 8px;
+  }
+  
+  /* Loading state */
+  .confirm-button.loading {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+  
+  /* Processing Screen */
+  .payment-processing {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: #f8f9fa;
+    text-align: center;
+    padding: 24px;
+  }
+  
+  .processing-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #000;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 24px;
+  }
+  
+  .payment-processing h2 {
+    font-size: 24px;
+    color: #000;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  
+  .payment-processing p {
+    color: #666;
+    font-size: 15px;
+  }
+  
+  /* Confirmation Screen */
+  .payment-confirmed {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: #f8f9fa;
+    text-align: center;
+  }
+  
+  .checkmark {
+    width: 80px;
+    height: 80px;
+    background: #28a745;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    animation: scale 0.5s ease-in-out;
+  }
+  
+  .payment-confirmed h2 {
+    color: #28a745;
+    margin-bottom: 10px;
+  }
+  
+  .payment-confirmed p {
+    color: #666;
+    margin-bottom: 5px;
+  }
+  
+  .redirect-message {
+    color: #999;
+    font-size: 0.9rem;
+    margin-top: 20px;
+  }
+  
+  /* Animations */
+  @keyframes modalSlideIn {
+    from {
+      transform: translateY(-20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  @keyframes scale {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+  }

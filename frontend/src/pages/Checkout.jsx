@@ -1,4 +1,3 @@
-// src/pages/Checkout.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Checkout.css';
@@ -23,12 +22,16 @@ const CheckoutPage = () => {
   const [cartItems, setCartItems] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showBankModal, setShowBankModal] = useState(false);
+  const [bankCode, setBankCode] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [isConfirmed, setIsConfirmed] = useState(false);
 
   // Load cart on mount
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch('/api/cart', { credentials: 'include' });        // cart.js :contentReference[oaicite:2]{index=2}
+        const res = await fetch('/api/cart', { credentials: 'include' });
         const data = await res.json();
         if (!res.ok) throw new Error(data.message || 'Failed to load cart');
         setCartItems(data.items);
@@ -55,7 +58,7 @@ const CheckoutPage = () => {
 
     try {
       // 1) Process payment
-      const payRes = await fetch('/api/payment', {                                  // payment.js :contentReference[oaicite:3]{index=3}&#8203;:contentReference[oaicite:4]{index=4}
+      const payRes = await fetch('/api/payment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -69,8 +72,30 @@ const CheckoutPage = () => {
       const payData = await payRes.json();
       if (!payRes.ok) throw new Error(payData.error);
 
-      // 2) Checkout
-      const coRes = await fetch('/api/checkout', {                                // checkout.js :contentReference[oaicite:5]{index=5}&#8203;:contentReference[oaicite:6]{index=6}
+      // Show bank verification modal
+      setShowBankModal(true);
+      setLoading(false);
+
+    } catch (err) {
+      setError(err.message);
+      setLoading(false);
+    }
+  };
+
+  const handleConfirmCode = async () => {
+    if (bankCode !== '123456') {
+      setError('Invalid code');
+      return;
+    }
+    setShowBankModal(false);
+    setIsProcessing(true);
+
+    try {
+      // Add 5 second delay to simulate processing
+      await new Promise(resolve => setTimeout(resolve, 5000));
+
+      // Proceed to checkout
+      const coRes = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -94,12 +119,17 @@ const CheckoutPage = () => {
       const coData = await coRes.json();
       if (!coRes.ok) throw new Error(coData.error);
 
-      // 3) Redirect to Order Confirmation
-      navigate(`/checkout/${coData.orderId}`);                                     // App.jsx route :contentReference[oaicite:7]{index=7}&#8203;:contentReference[oaicite:8]{index=8}
+      setIsProcessing(false);
+      setIsConfirmed(true);
+      
+      // Redirect after 2 seconds
+      setTimeout(() => {
+        navigate(`/checkout/${coData.orderId}`);
+      }, 2000);
 
     } catch (err) {
       setError(err.message);
-      setLoading(false);
+      setIsProcessing(false);
     }
   };
 
@@ -110,10 +140,78 @@ const CheckoutPage = () => {
     return <div className="checkout-wrapper"><p>Loading cart…</p></div>;
   }
 
+  if (isProcessing) {
+    return (
+      <div className="payment-processing">
+        <div className="processing-spinner"></div>
+        <h2>Processing Payment...</h2>
+        <p>Please wait while we complete your transaction</p>
+      </div>
+    );
+  }
+
+  if (isConfirmed) {
+    return (
+      <div className="payment-confirmed">
+        <div className="checkmark">✓</div>
+        <h2>Payment Confirmed!</h2>
+        <p>Your order has been successfully placed</p>
+        <p className="redirect-message">Redirecting to order details...</p>
+      </div>
+    );
+  }
+
   const total = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
   return (
     <div className="checkout-wrapper">
+      {showBankModal && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <div className="modal-content">
+              <div className="modal-header">
+                <div className="bank-logo">
+                  <svg viewBox="0 0 24 24" width="32" height="32">
+                    <path d="M12 2L2 8v2h20V8L12 2zm0 3L6 8h12l-6-3zM4 12v6h4v-6H4zm6 0v6h4v-6h-4zm6 0v6h4v-6h-4zM2 20h20v2H2v-2z" fill="currentColor"/>
+                  </svg>
+                </div>
+                
+              </div>
+
+              <div className="auth-content">
+                <h2>Purchase Authentication</h2>
+                <p className="auth-message">
+                  We've sent you a text message to your registered mobile number ending in 2329.
+                </p>
+
+                <div className="confirmation-input">
+                  <label>Confirmation code</label>
+                  <input
+                    type="text"
+                    value={bankCode}
+                    onChange={e => setBankCode(e.target.value)}
+                    maxLength={6}
+                    placeholder=""
+                    autoFocus
+                  />
+                </div>
+
+                <button 
+                  className="confirm-button"
+                  onClick={handleConfirmCode}
+                  disabled={loading}
+                >
+                  {loading ? 'Processing...' : 'Confirm payment'}
+                </button>
+
+                <button className="resend-button" onClick={() => setBankCode('')}>
+                  Resend code
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       <h2 className="checkout-header">Checkout</h2>
       <div className="checkout-grid">
 
