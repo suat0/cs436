@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import LoginSignup from "./pages/LoginSignup";
 import Orders from "./pages/Orders";
 import Navbar from "./components/Navbar";
+import Comment from "./pages/Comment";
 import Cart from "./pages/Cart";
 import Shop from "./pages/Shop";
 import CategoryPage from "./pages/CategoryPage";
