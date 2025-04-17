@@ -144,3 +144,11 @@
     margin-bottom: 20px;
     text-align: center;
   }
+  .pending-label {
+    font-size: 0.85rem;
+    color: #a87b74;
+    font-style: italic;
+    margin-top: -6px;
+    margin-bottom: 4px;
+  }
+  

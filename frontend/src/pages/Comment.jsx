@@ -18,32 +18,36 @@ export default function Comment() {
   const [successMessage, setSuccessMessage] = useState('');
 
 
-  // Fetch current user
-  fetch('http://localhost:5001/api/comments/me', {
-    credentials: 'include'
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) setCurrentUserId(data.user.id);
-  });
+  useEffect(() => {
+    fetch('http://localhost:5001/api/comments/me', {
+      credentials: 'include'
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) setCurrentUserId(data.user.id);
+      });
+  }, []);
 
 
   useEffect(() => {
-    setErrorMessage('');
-    // Fetch comments
-    fetch(`http://localhost:5001/api/comments/product/${productId}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) setReviews(data.comments);
-      });
-
-    // Fetch average rating
-    fetch(`http://localhost:5001/api/ratings/${productId}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) setAverage(data.average);
-      });
-  }, [productId]);
+    if (currentUserId !== null) {
+      setErrorMessage('');
+  
+      // Fetch comments with userId
+      fetch(`http://localhost:5001/api/comments/product/${productId}?userId=${currentUserId}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success) setReviews(data.comments);
+        });
+  
+      // Fetch average rating
+      fetch(`http://localhost:5001/api/ratings/${productId}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success) setAverage(data.average);
+        });
+    }
+  }, [productId, currentUserId]); 
 
   const handlePost = async () => {
     if (comment.trim() === '' && rating === 0) return;
@@ -116,7 +120,7 @@ export default function Comment() {
       setEditingReviewId(null);
 
       // Refresh comments
-      const res = await fetch(`http://localhost:5001/api/comments/product/${productId}`);
+      const res = await fetch(`http://localhost:5001/api/comments/product/${productId}?userId=${currentUserId}`);
       const commentData = await res.json();
       if (commentData.success) setReviews(commentData.comments);
 
@@ -213,7 +217,14 @@ export default function Comment() {
                   ))}
                 </div>
               )}
-              {r.comment && <p>{r.comment}</p>}
+              {r.comment && (
+              <>
+              <p>{r.comment}</p>
+              {r.user_id === currentUserId && r.status === 'pending' && (
+              <div className="pending-label">Not visible to others — pending comment</div>
+              )}
+              </>
+              )}
               <small>by {r.user_name}</small>
               {r.user_id === currentUserId && (
                 <button
