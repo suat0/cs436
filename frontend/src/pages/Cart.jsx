@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Cart.css";
 
 const CartPage = () => {
+  const navigate = useNavigate();
   const [cart, setCart] = useState(null);
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -54,7 +56,7 @@ const CartPage = () => {
       if (response.ok && data.success) {
         refreshCart();
       } else {
-        alert(data.error || "Failed to update quantity.");
+        alert(data.error || data.message || "Failed to update quantity.");
       }
     } catch (err) {
       console.error("Error updating quantity:", err);
@@ -119,7 +121,7 @@ const CartPage = () => {
       </div>
       <div className="cart-total">
         <h3>Total: ${total.toFixed(2)}</h3>
-        <button className="checkout-btn">Proceed to Checkout</button>
+        <button className="checkout-btn" onClick={() => navigate("/checkout")}>Proceed to Checkout</button>      
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
 const path = require("path");
 const cors = require("cors"); 
+const orderRoutes = require('./routes/orders');
 
 
 const authRoutes = require("./routes/auth");
@@ -31,6 +32,7 @@ app.use(cookieParser());
 app.use(session({ secret: process.env.SESSION_SECRET || "your_secret_key", resave: false, saveUninitialized: true, }));
 
 app.use("/auth", authRoutes);
+app.use('/api/orders', orderRoutes);
 
 //app.use(authenticate);
 app.use('/api/payment', paymentRoutes);
