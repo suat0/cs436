@@ -121,8 +121,8 @@ export default function Comment() {
 
       // Refresh comments
       const res = await fetch(`http://localhost:5001/api/comments/product/${productId}?userId=${currentUserId}`);
-      const commentData = await res.json();
-      if (commentData.success) setReviews(commentData.comments);
+      const refreshCommentData = await res.json();
+      if (refreshCommentData.success) setReviews(refreshCommentData.comments);
 
       // Refresh rating
       const ratingRefresh = await fetch(`http://localhost:5001/api/ratings/${productId}`);
