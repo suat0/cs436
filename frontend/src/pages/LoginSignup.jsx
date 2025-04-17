@@ -42,6 +42,8 @@ const LoginSignup = () => {
   
       if (response.ok) {
         alert(isLogin ? "Login successful!" : "Signup successful!"); 
+        // on successful login
+
         // Go back to the previous page or home if there isn't one
         navigate(-1);
       } else {

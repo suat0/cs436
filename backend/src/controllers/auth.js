@@ -60,6 +60,8 @@ bcrypt.hash('123456', 10).then(console.log)
         });
         
         res.status(200).json({ message: "Login successful", Name: user.Name,token });
+        // on login success
+        
         
 
     } catch (error) {
