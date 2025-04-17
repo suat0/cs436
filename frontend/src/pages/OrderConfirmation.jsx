@@ -9,6 +9,8 @@ export default function OrderConfirmation() {
   const navigate = useNavigate();
   const [pdfUrl, setPdfUrl] = useState(null);
   const [sendingEmail, setSendingEmail] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
 
   useEffect(() => {
@@ -23,7 +25,7 @@ export default function OrderConfirmation() {
       })
       .catch(err => {
         console.error("Invoice fetch error:", err);
-        alert("Failed to load invoice.");
+        setErrorMessage("Failed to load invoice.");
       });
   }, [orderId]);
 
@@ -35,14 +37,14 @@ export default function OrderConfirmation() {
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          alert("Invoice sent to your email.");
+          setSuccessMessage("Invoice sent to your email.");
         } else {
-          alert("Failed to send invoice: " + data.message);
+          setErrorMessage("Failed to send invoice: " + data.message);
         }
       })
       .catch(err => {
         console.error("Send email error:", err);
-        alert("Failed to send invoice.");
+        setErrorMessage("Failed to send invoice.");
       })
       .finally(() => setSendingEmail(false));
   };
@@ -60,8 +62,27 @@ export default function OrderConfirmation() {
     URL.revokeObjectURL(pdfUrl);
   };
 
+
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => setSuccessMessage(''), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
+  
   return (
     <div className="confirmation-container">
+    <div className="confirmation-content">
+      {errorMessage && (
+        <div className="error-message">
+          {errorMessage}
+        </div>
+      )}
+      {successMessage && (
+        <div className="success-message">
+        {successMessage}
+        </div>
+      )}
       <div className="confirmation-card">
         <h1 className="confirmation-title">Order Confirmed</h1>
         <p className="confirmation-subtext">Thank you for your purchase!</p>
@@ -89,6 +110,9 @@ export default function OrderConfirmation() {
         )}
       </div>
     </div>
+
+    </div>
+
   );
 }
 

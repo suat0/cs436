@@ -55,4 +55,38 @@
     border: 1px solid #ccc;
     border-radius: 6px;
   }
+  .error-message {
+    background-color: #ffe5e5;
+    color: #b20000;
+    border: 1px solid #ffb3b3;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    margin-bottom: 20px;
   
+    /* Make it look like the card and center it */
+    max-width: 800px;
+    width: 100%;
+    text-align: center;
+  
+    /* Center it in container */
+    display: block;
+  }
+  
+  .confirmation-content {
+    max-width: 800px;
+    width: 100%;
+  }
+
+  .success-message {
+    background-color: #e6ffed;
+    color: #2b7a4b;
+    border: 1px solid #b2dfc2;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    text-align: center;
+    max-width: 800px;
+    width: 100%;
+  }
