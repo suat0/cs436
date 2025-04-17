@@ -134,4 +134,13 @@
     box-shadow: 0 0 0 2px rgba(200, 151, 142, 0.4); /* soft shadow when focused */
   }
   
-  
+  .success-message {
+    background-color: #e6ffed;
+    color: #2b7a4b;
+    border: 1px solid #b2dfc2;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    text-align: center;
+  }

@@ -15,6 +15,7 @@ export default function Comment() {
   const [currentUserId, setCurrentUserId] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editingReviewId, setEditingReviewId] = useState(null);
+  const [successMessage, setSuccessMessage] = useState('');
 
 
   // Fetch current user
@@ -50,6 +51,7 @@ export default function Comment() {
     setErrorMessage('');
 
     try {
+      let successText = '';
       // Submit comment if provided
       if (comment.trim() !== '') {
         console.log('Posting comment...');
@@ -71,6 +73,11 @@ export default function Comment() {
         setErrorMessage(commentData.message || 'Failed to submit comment.');
         return;
       }
+      if (commentData.success) {
+        successText += "Comment submitted for review. ";
+
+      }
+      
     }
 
       // Submit rating if provided
@@ -93,7 +100,13 @@ export default function Comment() {
           setErrorMessage(ratingData.message || 'Failed to submit rating.');
           return;
         }
+        if (ratingData.success) {
+          successText += "Rating submitted.";
+        }
+        
       }
+
+      setSuccessMessage(successText.trim());
 
       // Clear inputs
       setComment('');
@@ -118,10 +131,21 @@ export default function Comment() {
     
   };
 
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => setSuccessMessage(''), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
 
   return (
     <div className="review-container">
       <div className="review-box">
+      {successMessage && (
+        <div className="success-message">
+        {successMessage}
+        </div>
+      )}
         {/* Error message */}
         {errorMessage && (
           <div className="error-message">
@@ -137,6 +161,7 @@ export default function Comment() {
           onChange={(e) => {
             setComment(e.target.value);
             setErrorMessage(''); // clear error on new input
+            setSuccessMessage('');
           }}
         ></textarea>
 
