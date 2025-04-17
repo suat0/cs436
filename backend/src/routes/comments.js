@@ -18,7 +18,6 @@ async function userPurchasedProduct(user_id, product_id) {
 }
 
 // POST /api/comments
-// POST /api/comments
 router.post('/', isAuthenticated, async (req, res) => {
   const { product_id, comment } = req.body;
   const user_id = req.user.id;
@@ -67,7 +66,7 @@ router.post('/', isAuthenticated, async (req, res) => {
 router.get('/product/:id', async (req, res) => {
   const productId = req.params.id;
   const userId = req.query.userId || null;
-  console.log('✅ Current userId:', userId);
+  console.log('Current userId:', userId);
 
 
 try {

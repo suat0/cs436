@@ -10,7 +10,7 @@ async function userPurchasedProduct(user_id, product_id) {
     `SELECT COUNT(*) as count
      FROM Orders o
      JOIN Order_Items oi ON o.id = oi.order_id
-     WHERE o.user_id = ? AND oi.product_id = ? AND o.status = 'delivered'`, //askhjdvbsakjhdbsahj
+     WHERE o.user_id = ? AND oi.product_id = ? AND o.status = 'delivered'`,
     [user_id, product_id]
   );
   return result[0].count > 0;
