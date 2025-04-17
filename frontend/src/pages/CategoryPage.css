@@ -86,4 +86,30 @@
     color: #b8860b;
     margin: 0;
   }
+
+  .sort-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    padding: 0 16px;
+  }
   
+  .sort-align-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    margin-left: auto;
+    white-space: nowrap;
+  }
+  
+  .sort-align-right select {
+    padding: 4px 8px;
+    font-size: 14px;
+  }

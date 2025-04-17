@@ -11,13 +11,13 @@ const CategoryPage = () => {
   const navigate = useNavigate();
   const { addToCart } = useCart();
   const [products, setProducts] = useState([]);
+  const [sort, setSort] = useState("name");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        // Fetch all active categories (like in Shop.jsx)
         const catRes = await fetch('/api/categories?active=true', {
           headers: {
             'Accept': 'application/json',
@@ -31,7 +31,7 @@ const CategoryPage = () => {
         if (!catData.success || !catData.data) {
           throw new Error(catData.message || "Failed to fetch categories");
         }
-        // Find the category whose name matches the URL param (ignoring case)
+
         const currentCategory = catData.data.find(
           (cat) => cat.name.toLowerCase() === category.toLowerCase()
         );
@@ -40,8 +40,8 @@ const CategoryPage = () => {
           setLoading(false);
           return;
         }
-        // Now fetch products for this category using its id
-        const prodRes = await fetch(`/api/categories/${currentCategory.id}/products`, {
+
+        const prodRes = await fetch(`/api/categories/${currentCategory.id}/products?sort_by=${sort}`, {
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
@@ -54,7 +54,7 @@ const CategoryPage = () => {
         if (!prodData.success || !prodData.data) {
           throw new Error(prodData.message || "Failed to fetch products");
         }
-        // The response returns an object with category and products fields
+
         setProducts(prodData.data.products);
       } catch (err) {
         console.error("Error fetching products:", err);
@@ -65,7 +65,7 @@ const CategoryPage = () => {
     };
 
     fetchProducts();
-  }, [category]);
+  }, [category, sort]);
 
   if (loading) return <p>Loading products...</p>;
   if (error) return <p>Error: {error}</p>;
@@ -75,6 +75,21 @@ const CategoryPage = () => {
       <h2 className="category-title">
         {category.charAt(0).toUpperCase() + category.slice(1)}
       </h2>
+
+      <div className="sort-header">
+        <div className="sort-align-right">
+          <label>Sort by: </label>
+          <select value={sort} onChange={(e) => setSort(e.target.value)}>
+            <option value="name">Name (A–Z)</option>
+            <option value="name_desc">Name (Z–A)</option>
+            <option value="price">Price (Low to High)</option>
+            <option value="price_desc">Price (High to Low)</option>
+            <option value="popularity">Popularity (High to Low)</option>
+            <option value="popularity_asc">Popularity (Low to High)</option>
+          </select>
+        </div>
+      </div>
+
       <div className="product-grid">
         {products.map((product) => (
           <div className="product-card" key={product.id}>
