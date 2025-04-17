@@ -27,6 +27,13 @@
     color: #333;
   }
   
+  .button-group {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  
   .download-btn {
     padding: 10px 20px;
     background-color: #C49B8F;
@@ -35,7 +42,6 @@
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    margin-bottom: 20px;
     transition: background-color 0.3s ease;
   }
   
