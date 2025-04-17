@@ -69,7 +69,7 @@ const ProductPage = () => {
       if (addItemResponse.ok) {
         alert(`${quantity} item(s) added to cart.`);
       } else {
-        alert(addItemData.error || 'Failed to add item to cart.');
+        alert(addItemData.error || addItemData.message || 'Failed to add item to cart.');
       }
     } catch (err) {
       console.error('Error adding to cart:', err);

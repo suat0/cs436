@@ -9,6 +9,7 @@ import Shop from "./pages/Shop";
 import CategoryPage from "./pages/CategoryPage";
 import SearchPage from "./pages/SearchPage";
 import Product from "./pages/Product";
+import CheckoutPage from "./pages/Checkout";
 
 
 function App() {
@@ -32,7 +33,8 @@ function App() {
           <Route path="/account" element={<LoginSignup />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/shop" element={<Shop />} />
-            <Route path="/cart" element={<Cart />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/category/:category" element={<CategoryPage />} />
           <Route path="/search/:search_query" element={<SearchPage />} />
           <Route path="/product/:id" element={<Product />} />
