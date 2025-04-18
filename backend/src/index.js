@@ -4,7 +4,7 @@ const dotenv = require("dotenv");
 const path = require("path");
 const cors = require("cors"); 
 const orderRoutes = require('./routes/orders');
-
+const session = require("express-session");
 
 const authRoutes = require("./routes/auth");
 const productRoutes = require("./routes/product");
@@ -12,7 +12,6 @@ const categoryRoutes = require("./routes/category");
 const cartRoutes = require("./routes/cart");
 const checkoutRoutes = require('./routes/checkout');
 const paymentRoutes = require('./routes/payment');
-const session = require("express-session");
 
 const authenticate = require('./middleware/authMiddleware');
 const invoiceRoutes = require('./routes/invoice');

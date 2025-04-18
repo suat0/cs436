@@ -1,5 +1,5 @@
-CREATE SCHEMA `cs308` ;
-Use cs308;
+-- CREATE SCHEMA `cs308` ;
+-- Use cs308;
 
 CREATE TABLE Users (
     id INT PRIMARY KEY AUTO_INCREMENT,
