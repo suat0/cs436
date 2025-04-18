@@ -53,13 +53,13 @@ export default function Comment() {
 useEffect(() => {
   if (currentUserId === null) {
     // Fetch only approved comments and public ratings
-    fetch(`http://localhost:5001/api/comments/product/${productId}`)
+    fetch(`/api/comments/product/${productId}`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success) setReviews(data.comments);
       });
 
-    fetch(`http://localhost:5001/api/ratings/${productId}`)
+    fetch(`/api/ratings/${productId}`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success) setAverage(data.average);
@@ -138,9 +138,11 @@ useEffect(() => {
       setEditingReviewId(null);
 
       // Refresh comments
-      const res = await fetch(`/api/comments/product/${productId}?userId=${currentUserId}`);
-      const refreshCommentData = await res.json();
-      if (refreshCommentData.success) setReviews(refreshCommentData.comments);
+      const res = await fetch(`/api/comments/product/${productId}?userId=${currentUserId}`, {
+        credentials: 'include',
+      });
+      const commentData = await res.json();
+      if (commentData.success) setReviews(commentData.comments);
 
       // Refresh rating
       const ratingRefresh = await fetch(`/api/ratings/${productId}`);
@@ -275,4 +277,3 @@ useEffect(() => {
     </div>
   );
 }
-
