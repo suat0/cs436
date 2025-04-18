@@ -11,6 +11,20 @@ const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+
+
+  useEffect(() => {
+    if (successMessage || errorMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage('');
+        setErrorMessage('');
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage, errorMessage]);
+
   const [showLoginModal, setShowLoginModal] = useState(false);
 
   // Function to refresh the cart data from the API
@@ -27,6 +41,7 @@ const CartPage = () => {
       if (response.ok && data.success) {
         setCart(data.cart);
         setCartItems(data.items);
+        
       } else {
         if (response.status === 401) {
           setShowLoginModal(true);
@@ -36,7 +51,7 @@ const CartPage = () => {
       }
     } catch (err) {
       console.error("Error fetching cart:", err);
-      setError(err.message);
+
     } finally {
       setLoading(false);
     }
@@ -65,7 +80,8 @@ const CartPage = () => {
       if (response.ok && data.success) {
         refreshCart();
       } else {
-        alert(data.error || "Failed to update quantity.");
+        setErrorMessage(data.error || "Failed to update quantity.");
+        setSuccessMessage('');
       }
     } catch (err) {
       console.error("Error updating quantity:", err);
@@ -86,7 +102,8 @@ const CartPage = () => {
       if (response.ok && data.success) {
         refreshCart();
       } else {
-        alert(data.error || "Failed to remove item.");
+        setErrorMessage(data.error || "Failed to remove item.");
+        setSuccessMessage('');
       }
     } catch (err) {
       console.error("Error removing item:", err);
@@ -108,11 +125,20 @@ const CartPage = () => {
   };
 
   if (loading) return <p>Loading cart...</p>;
-  if (error) return <p>Error: {error}</p>;
+
 
   return (
     <div className="cart-page">
       <h2 className="cart-title">Your Shopping Cart</h2>
+      {(successMessage || errorMessage) && (
+      <div
+      className={`feedback-message ${
+      successMessage ? 'success-message' : 'error-message'
+      }`}
+      >
+      {successMessage || errorMessage}
+      </div>
+      )}
       <div className="cart-items">
         {cartItems.map((item) => (
           <div key={item.id} className="cart-item">
