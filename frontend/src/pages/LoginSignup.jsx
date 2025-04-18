@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./LoginSignup.css"; 
-
+import { useAuth } from "../context/AuthContext"; // Uncomment if using AuthContext
 const LoginSignup = () => {
   const navigate = useNavigate();
+  const { login } = useAuth(); // Uncomment if using AuthContext
 
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({ email: "", name: "", password: "" });
@@ -45,6 +46,9 @@ const LoginSignup = () => {
       const data = await response.json(); 
       console.log("Response data:", data);
       if (response.ok) {
+        if (isLogin) {
+          await login(formData.email, formData.password); // updates context state
+        }
         setErrorMessage("");
         setSuccessMessage(isLogin ? "Login successful!" : "Signup successful!");
   
