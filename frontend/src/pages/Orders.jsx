@@ -1,53 +1,32 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Orders.css";
 
 const OrdersPage = () => {
-  const orders = [
-    {
-      id: 101,
-      user_id: 1,
-      total_price: 849.0,
-      delivery_address: "Illinois, United States",
-      status: "in-transit",
-      date: "2024-05-25",
-      items: [
-        {
-          product_id: 1,
-          name: "Japan Green Outer",
-          image: "https://via.placeholder.com/80",
-          price_at_purchase: 399.0,
-          quantity: 1,
-        },
-        {
-          product_id: 2,
-          name: "White off jacket 2024",
-          image: "https://via.placeholder.com/80",
-          price_at_purchase: 450.0,
-          quantity: 1,
-        },
-      ],
-    },
-    {
-      id: 102,
-      user_id: 1,
-      total_price: 300.0,
-      delivery_address: "Illinois, United States",
-      status: "in-transit",
-      date: "2024-05-25",
-      items: [
-        {
-          product_id: 3,
-          name: "Soft Hoodie",
-          image: "https://via.placeholder.com/80",
-          price_at_purchase: 300.0,
-          quantity: 1,
-        },
-      ],
-    },
-  ];
+  const [orders, setOrders] = useState([]);
+  const [activeTab, setActiveTab] = useState("processing");
 
   const TABS = ["processing", "in-transit", "delivered", "cancelled"];
-  const [activeTab, setActiveTab] = React.useState("in-transit");
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const response = await fetch("/api/orders", {
+          credentials: "include",
+        });
+        const data = await response.json();
+        if (response.ok && data.success) {
+          setOrders(data.orders);
+          console.log(data.orders);
+        } else {
+          throw new Error(data.message || "Failed to load orders");
+        }
+      } catch (error) {
+        console.error("Failed to fetch orders:", error);
+      }
+    };
+
+    fetchOrders();
+  }, []);
 
   const filteredOrders = orders.filter((order) => order.status === activeTab);
 
@@ -80,19 +59,21 @@ const OrdersPage = () => {
                 <div className="order-address">{order.delivery_address}</div>
               </div>
               <div className="order-items">
-                {order.items.map((item, i) => (
+              {(order.items || []).map((item, i) => (
                   <div className="order-item" key={i}>
-                    <img src={item.image} alt={item.name} />
+                    <img src={item.product.image_url} alt={item.product.name} />
                     <div>
-                      <div className="item-name">{item.name}</div>
+                      <div className="item-name">{item.product.name}</div>
                       <div className="item-details">
-                        €{item.price_at_purchase.toLocaleString()} x{item.quantity}
+                        €{parseFloat(item.price_at_purchase).toLocaleString()} x{item.quantity}
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
-              <div className="order-total">Total: €{order.total_price.toLocaleString()}</div>
+              <div className="order-total">
+                Total: €{parseFloat(order.total_price).toLocaleString()}
+              </div>
             </div>
           ))
         )}
