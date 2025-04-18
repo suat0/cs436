@@ -6,13 +6,18 @@ const authenticate = require('../middleware/authMiddleware');
 // GET /api/orders - Get orders for the authenticated user
 router.get('/', authenticate, async (req, res) => {
   try {
-    const [orders] = await db.query('SELECT * FROM orders WHERE user_id = ? ORDER BY id DESC', [req.user.id]);
-    res.json({ orders });
+    const [orders] = await db.query(
+      'SELECT * FROM orders WHERE user_id = ? ORDER BY id DESC',
+      [req.user.id]
+    );
+
+    res.json({ success: true, orders }); // ✅ Include success
   } catch (error) {
     console.error('Error fetching orders:', error);
-    res.status(500).json({ error: 'Failed to fetch orders.' });
+    res.status(500).json({ success: false, error: 'Failed to fetch orders.' }); // ✅ Uniform error shape
   }
 });
+
 
 // routes/orders.js
 // Update Order Status - Only Product Manager can do this
