@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Cart.css";
-import { useNavigate} from "react-router-dom";
 import { useAuth } from '../context/AuthContext';
 
 const CartPage = () => {
@@ -11,7 +10,6 @@ const CartPage = () => {
   const [cart, setCart] = useState(null);
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 

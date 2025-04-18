@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const db = require('../controllers/db');
 
 class authController {
-    verifyToken = (token) => {
+    verifyToken(token) {
         try {
           if (!token) return null;
           const decoded = jwt.verify(token, "your_secret_key");
@@ -13,15 +13,15 @@ class authController {
           console.error("JWT verification error:", error.message);
           return null;
         }
-      };
-    async status (req,res){
+      }
+    status = async (req, res) => {
         try {
             console.log("Status check - all cookies:", req.cookies);
             const token = req.cookies.token;
             console.log("Status check - token from cookies:", token);
         
             // Verify token
-            const decoded = verifyToken(token);
+            const decoded = this.verifyToken(token);
             console.log("Status check - decoded token:", decoded);
             
             if (!decoded) {
@@ -66,7 +66,7 @@ class authController {
           }
 
     };
-    async signup(req, res) {
+    signup = async (req, res) => {
         try {
             const { Name, Email, Password } = req.body;
             //console.log("Request Body:", req.body); 
@@ -95,7 +95,7 @@ class authController {
             res.status(500).json({ error: "Error registering user" });
         }
     };
-    async login(req, res) {
+    login = async (req, res) => {
         try {
             const { email, password } = req.body;
             console.log("Login attempt with email:", email);
@@ -151,12 +151,10 @@ class authController {
             res.status(500).json({ error: "Error logging in" });
         }
     };  
-    async logout(req, res) {
+    logout = async (req, res) => {
         res.clearCookie('token');
         res.status(200).json({ message: "Logout successful" });
     };    
 }
-
-
 
 module.exports = new authController();
