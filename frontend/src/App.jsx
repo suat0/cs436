@@ -4,11 +4,12 @@ import Home from "./pages/Home";
 import LoginSignup from "./pages/LoginSignup";
 import Orders from "./pages/Orders";
 import Navbar from "./components/Navbar";
-import Comment from  "./pages/Comment";
+import Comment from "./pages/Comment";
 import Cart from "./pages/Cart";
 import Shop from "./pages/Shop";
 import CategoryPage from "./pages/CategoryPage";
 import Product from "./pages/Product";
+import CheckoutPage from "./pages/Checkout";
 
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
           <Route path="/comments/:productId" element={<Comment />} />
           <Route path="/shop" element={<Shop />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/category/:category" element={<CategoryPage />} />
           <Route path="/product/:id" element={<Product />} />
         </Routes>

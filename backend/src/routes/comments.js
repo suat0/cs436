@@ -66,59 +66,54 @@ router.post('/', isAuthenticated, async (req, res) => {
 router.get('/product/:id', async (req, res) => {
   const productId = req.params.id;
   const userId = req.query.userId || null;
-  console.log('Current userId:', userId);
-
-
-try {
-  const [comments] = await db.execute(
-    `
-    (
-  -- Approved comments or user's own comment (any status)
-  SELECT 
-    c.comment, 
-    c.date, 
-    u.name AS user_name, 
-    r.rating, 
-    c.user_id,
-    c.status
-  FROM Comments c
-  JOIN Users u ON c.user_id = u.id
-  LEFT JOIN Ratings r 
-    ON r.user_id = c.user_id AND r.product_id = c.product_id
-  WHERE c.product_id = ? AND (
-    c.status = 'approved' OR 
-    (? IS NOT NULL AND c.user_id = ?)
-  )
-)
-
-UNION
-
-(
-  -- Ratings for users who don't have a comment (approved or their own)
-  SELECT 
-    NULL AS comment, 
-    r.created_at AS date, 
-    u.name AS user_name, 
-    r.rating, 
-    r.user_id,
-    NULL AS status
-  FROM Ratings r
-  JOIN Users u ON r.user_id = u.id
-  WHERE r.product_id = ?
-  AND NOT EXISTS (
-    SELECT 1 FROM Comments c2
-    WHERE c2.product_id = r.product_id
-      AND c2.user_id = r.user_id
-      AND (
-        c2.status = 'approved' OR 
-        (? IS NOT NULL AND c2.user_id = ?)
+  try {
+    const [comments] = await db.execute(
+        `
+        (
+      -- Approved comments or user's own comment (any status)
+      SELECT 
+        c.comment, 
+        c.date, 
+        u.name AS user_name, 
+        r.rating, 
+        c.user_id,
+        c.status
+      FROM Comments c
+      JOIN Users u ON c.user_id = u.id
+      LEFT JOIN Ratings r 
+        ON r.user_id = c.user_id AND r.product_id = c.product_id
+      WHERE c.product_id = ? AND (
+        c.status = 'approved' OR 
+        (? IS NOT NULL AND c.user_id = ?)
       )
-  )
-)
+    )
 
-ORDER BY date DESC;
+    UNION
 
-    `,
+    (
+      -- Ratings for users who don't have a comment (approved or their own)
+      SELECT 
+        NULL AS comment, 
+        r.created_at AS date, 
+        u.name AS user_name, 
+        r.rating, 
+        r.user_id,
+        NULL AS status
+      FROM Ratings r
+      JOIN Users u ON r.user_id = u.id
+      WHERE r.product_id = ?
+      AND NOT EXISTS (
+        SELECT 1 FROM Comments c2
+        WHERE c2.product_id = r.product_id
+          AND c2.user_id = r.user_id
+          AND (
+            c2.status = 'approved' OR 
+            (? IS NOT NULL AND c2.user_id = ?)
+          )
+      )
+    )
+
+    ORDER BY date DESC;`,
     [productId, userId, userId, productId, userId, userId]
   );
 

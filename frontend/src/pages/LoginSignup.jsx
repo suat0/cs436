@@ -1,7 +1,10 @@
 import React, { useState } from "react";
+import { useNavigate} from "react-router-dom";
 import "./LoginSignup.css"; 
 
 const LoginSignup = () => {
+  const navigate = useNavigate();
+
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({ Name: "", Email: "", Password: "" });
 
@@ -18,8 +21,8 @@ const LoginSignup = () => {
     e.preventDefault(); 
   
     const url = isLogin 
-      ? "http://localhost:5001/auth/login"  
-      : "http://localhost:5001/auth/signup";  
+      ? "/auth/login"  
+      : "/auth/signup";  
 
   
     const payload = isLogin
@@ -39,6 +42,8 @@ const LoginSignup = () => {
   
       if (response.ok) {
         alert(isLogin ? "Login successful!" : "Signup successful!"); 
+        // Go back to the previous page or home if there isn't one
+        navigate(-1);
       } else {
         alert(data.error); 
       }

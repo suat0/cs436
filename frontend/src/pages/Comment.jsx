@@ -19,7 +19,7 @@ export default function Comment() {
 
 
   useEffect(() => {
-    fetch('http://localhost:5001/api/comments/me', {
+    fetch('/api/comments/me', {
       credentials: 'include'
     })
       .then(res => res.json())
@@ -34,14 +34,14 @@ export default function Comment() {
       setErrorMessage('');
   
       // Fetch comments with userId
-      fetch(`http://localhost:5001/api/comments/product/${productId}?userId=${currentUserId}`)
+      fetch(`/api/comments/product/${productId}?userId=${currentUserId}`)
         .then((res) => res.json())
         .then((data) => {
           if (data.success) setReviews(data.comments);
         });
   
       // Fetch average rating
-      fetch(`http://localhost:5001/api/ratings/${productId}`)
+      fetch(`/api/ratings/${productId}`)
         .then((res) => res.json())
         .then((data) => {
           if (data.success) setAverage(data.average);
@@ -77,7 +77,7 @@ useEffect(() => {
       // Submit comment if provided
       if (comment.trim() !== '') {
         console.log('Posting comment...');
-        const commentRes= await fetch('http://localhost:5001/api/comments', {
+        const commentRes = await fetch('/api/comments', {
           method: isEditing ? 'PUT' : 'POST',
           credentials: 'include',
           headers: {
@@ -105,7 +105,7 @@ useEffect(() => {
       // Submit rating if provided
       if (rating !== 0) {
         console.log('Posting rating...');
-        const ratingRes = await fetch('http://localhost:5001/api/ratings', {
+        const ratingRes = await fetch('/api/ratings', {
           method: isEditing ? 'PUT' : 'POST',
           credentials: 'include',
           headers: {
@@ -138,12 +138,12 @@ useEffect(() => {
       setEditingReviewId(null);
 
       // Refresh comments
-      const res = await fetch(`http://localhost:5001/api/comments/product/${productId}?userId=${currentUserId}`);
-      const commentData = await res.json();
-      if (commentData.success) setReviews(commentData.comments);
+      const res = await fetch(`/api/comments/product/${productId}?userId=${currentUserId}`);
+      const refreshCommentData = await res.json();
+      if (refreshCommentData.success) setReviews(refreshCommentData.comments);
 
       // Refresh rating
-      const ratingRefresh = await fetch(`http://localhost:5001/api/ratings/${productId}`);
+      const ratingRefresh = await fetch(`/api/ratings/${productId}`);
       const ratingData = await ratingRefresh.json();
       if (ratingData.success) setAverage(ratingData.average);
     } catch (err) {
