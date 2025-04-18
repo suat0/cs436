@@ -9,8 +9,9 @@ import Shop from "./pages/Shop";
 import CategoryPage from "./pages/CategoryPage";
 import Product from "./pages/Product";
 import CheckoutPage from "./pages/Checkout";
-import OrderConfirmation from "./pages/OrderConfirmation"
-
+import OrderConfirmation from "./pages/OrderConfirmation";
+import ProtectedRoute from './components/ProtectedRoute';
+import { AuthProvider } from './context/AuthContext';
 
 function App() {
   const appContainerStyle = {
@@ -25,23 +26,36 @@ function App() {
   };
 
   return (
-    <div style={appContainerStyle}>
-      <Navbar />
-      <main style={mainContentStyle}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/account" element={<LoginSignup />} />
-          <Route path="/orders" element={<Orders />} />
-          <Route path="/shop" element={<Shop />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<CheckoutPage />} />
-          <Route path="/category/:category" element={<CategoryPage />} />
-          <Route path="/product/:id" element={<Product />} />
-          <Route path="/checkout/:orderId" element={<OrderConfirmation />} />
-        </Routes>
-      </main>
-      <Footer />
-    </div>
+    <AuthProvider>
+      <div style={appContainerStyle}>
+        <Navbar />
+        <main style={mainContentStyle}>
+          <Routes>
+            {/* Public routes */}
+            <Route path="/" element={<Home />} />
+            <Route path="/account" element={<LoginSignup />} />
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/shop" element={<Shop />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/login" element={<LoginSignup />} />
+            
+            {/* Protected routes */}
+            <Route
+              path="/checkout"
+              element={
+                <ProtectedRoute>
+                  <CheckoutPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/category/:category" element={<CategoryPage />} />
+            <Route path="/product/:id" element={<Product />} />
+            <Route path="/checkout/:orderId" element={<OrderConfirmation />} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+    </AuthProvider>
   );
 }
 

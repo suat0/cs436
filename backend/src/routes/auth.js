@@ -14,6 +14,9 @@ const loginLimiter = rateLimit({
     legacyHeaders: false, // Disable X-RateLimit headers (use standard headers instead)
 });
 
+// Auth status check
+router.get('/status', authController.status);
+
 router.post("/signup", authController.signup);
 router.post("/login",[loginLimiter], authController.login);
 

@@ -1,18 +1,20 @@
 import React, { useState } from "react";
-import { useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./LoginSignup.css"; 
 
 const LoginSignup = () => {
   const navigate = useNavigate();
 
   const [isLogin, setIsLogin] = useState(true);
-  const [formData, setFormData] = useState({ Name: "", Email: "", Password: "" });
+  const [formData, setFormData] = useState({ email: "", name: "", password: "" });
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
   const toggleForm = () => {
     setIsLogin(!isLogin);
-    setFormData({ Name: "", Email: "", Password: "" });
+    setFormData({ email: "", name: "", password: "" });
+    setErrorMessage("");
+    setSuccessMessage("");
   };
 
   const handleChange = (e) => {
@@ -21,16 +23,18 @@ const LoginSignup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); 
+    console.log('Submitting form data:', formData);
   
     const url = isLogin 
-      ? "http://localhost:5001/auth/login"  
-      : "http://localhost:5001/auth/signup";  
+      ? "/auth/login"  
+      : "/auth/signup";  
   
     const payload = isLogin
-      ? { Name: formData.Name, Password: formData.Password } 
-      : { Name: formData.Name, Email: formData.Email, Password: formData.Password }; 
+      ? { email: formData.email, password: formData.password } 
+      : { name: formData.name, email: formData.email, password: formData.password }; 
   
     try {
+      console.log('Sending payload:', payload);
       const response = await fetch(url, {
         method: "POST", 
         headers: { "Content-Type": "application/json" }, 
@@ -39,7 +43,7 @@ const LoginSignup = () => {
       });
   
       const data = await response.json(); 
-  
+      console.log("Response data:", data);
       if (response.ok) {
         setErrorMessage("");
         setSuccessMessage(isLogin ? "Login successful!" : "Signup successful!");
@@ -72,7 +76,6 @@ const LoginSignup = () => {
       }, 3000);
     }
   };
-  
 
   return (
     <div className="container">
@@ -83,22 +86,42 @@ const LoginSignup = () => {
         {successMessage && <div className="message success">{successMessage}</div>}
 
         <form onSubmit={handleSubmit}>
+          <div className="input-group">
+            <label>Email</label>
+            <input 
+              type="email" 
+              name="email" 
+              placeholder="Enter your email" 
+              value={formData.email} 
+              onChange={handleChange} 
+              required
+            />
+          </div>
+
           {!isLogin && (
             <div className="input-group">
-              <label>Email</label>
-              <input type="Email" name="Email" placeholder="Enter your email" value={formData.Email} onChange={handleChange} required={!isLogin}/>
+              <label>Username</label>
+              <input 
+                type="text" 
+                name="name" 
+                placeholder="Enter your username" 
+                value={formData.name} 
+                onChange={handleChange} 
+                required={!isLogin}
+              />
             </div>
           )}
 
           <div className="input-group">
-            <label>Username</label>
-            <input type="text" name="Name" placeholder="Enter your username" value={formData.Name} onChange={handleChange} required/>
-          </div>
-
-
-          <div className="input-group">
             <label>Password</label>
-            <input type="Password" name="Password" placeholder="Enter your password" value={formData.Password} onChange={handleChange} required />
+            <input 
+              type="password" 
+              name="password" 
+              placeholder="Enter your password" 
+              value={formData.password} 
+              onChange={handleChange} 
+              required 
+            />
           </div>
 
           <button type="submit" className="submit-btn">
