@@ -10,6 +10,18 @@ const ProductPage = () => {
   const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [wishlist, setWishlist] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    if (successMessage || errorMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage('');
+        setErrorMessage('');
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage, errorMessage]);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -45,7 +57,8 @@ const ProductPage = () => {
 
   const addToCart = async () => {
     if (quantity > product.quantity_in_stock) {
-      alert('Quantity exceeds stock available.');
+      setErrorMessage('Quantity exceeds stock available.');
+      setSuccessMessage('');
       return;
     }
     try {
@@ -67,15 +80,19 @@ const ProductPage = () => {
       });
       const addItemData = await addItemResponse.json();
       if (addItemResponse.ok) {
-        alert(`${quantity} item(s) added to cart.`);
+        setSuccessMessage(`${quantity} item(s) added to cart.`);
+        setErrorMessage('');
       } else {
-        alert(addItemData.error || addItemData.message || 'Failed to add item to cart.');
+        setErrorMessage(addItemData.error || 'Failed to add item to cart.');
+        setSuccessMessage('');
       }
     } catch (err) {
       console.error('Error adding to cart:', err);
-      alert('Error adding to cart.');
+      setErrorMessage('Error adding to cart.');
+      setSuccessMessage('');
     }
   };
+
 
   const toggleWishlist = () => {
     setWishlist(!wishlist);
@@ -89,6 +106,15 @@ const ProductPage = () => {
     <div className="product-container">
       <img src={product.image_url} alt={product.name} className="product-image" />
       <div className="product-details">
+      {(successMessage || errorMessage) && (
+      <div
+      className={`feedback-message ${
+        successMessage ? 'success-message' : 'error-message'
+      }`}
+        >
+      {successMessage || errorMessage}
+      </div>
+      )}
         <h1>{product.name}</h1>
         <p className="price">${Number(product.price).toFixed(2)}</p>
         <p>{product.description}</p>

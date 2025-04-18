@@ -1,13 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Cart.css";
+import { useAuth } from '../context/AuthContext';
 
 const CartPage = () => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+  console.log("isAuthenticated:", isAuthenticated);
   const [cart, setCart] = useState(null);
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+
+
+  useEffect(() => {
+    if (successMessage || errorMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage('');
+        setErrorMessage('');
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage, errorMessage]);
+
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   // Function to refresh the cart data from the API
   const refreshCart = async () => {
@@ -18,16 +35,22 @@ const CartPage = () => {
           "Content-Type": "application/json"
         }
       });
+      console.log("Cart API response status:", response.status);
       const data = await response.json();
       if (response.ok && data.success) {
         setCart(data.cart);
         setCartItems(data.items);
+        
       } else {
+        if (response.status === 401) {
+          setShowLoginModal(true);
+          return;
+        }
         throw new Error(data.error || "Failed to fetch cart.");
       }
     } catch (err) {
       console.error("Error fetching cart:", err);
-      setError(err.message);
+
     } finally {
       setLoading(false);
     }
@@ -54,9 +77,13 @@ const CartPage = () => {
       });
       const data = await response.json();
       if (response.ok && data.success) {
+
         refreshCart();
       } else {
-        alert(data.error || data.message || "Failed to update quantity.");
+        setErrorMessage(data.error || "Failed to update quantity.");
+        setSuccessMessage('');
+        setErrorMessage(data.error || "Failed to update quantity.");
+        setSuccessMessage('');
       }
     } catch (err) {
       console.error("Error updating quantity:", err);
@@ -77,7 +104,10 @@ const CartPage = () => {
       if (response.ok && data.success) {
         refreshCart();
       } else {
-        alert(data.error || "Failed to remove item.");
+        setErrorMessage(data.error || "Failed to remove item.");
+        setSuccessMessage('');
+        setErrorMessage(data.error || "Failed to remove item.");
+        setSuccessMessage('');
       }
     } catch (err) {
       console.error("Error removing item:", err);
@@ -90,12 +120,38 @@ const CartPage = () => {
     0
   );
 
+  const handleCheckout = () => {
+    if (!isAuthenticated) {
+      setShowLoginModal(true);
+    } else {
+      navigate('/checkout');
+    }
+  };
+
   if (loading) return <p>Loading cart...</p>;
-  if (error) return <p>Error: {error}</p>;
+
 
   return (
     <div className="cart-page">
       <h2 className="cart-title">Your Shopping Cart</h2>
+      {(successMessage || errorMessage) && (
+      <div
+      className={`feedback-message ${
+      successMessage ? 'success-message' : 'error-message'
+      }`}
+      >
+      {successMessage || errorMessage}
+      </div>
+      )}
+      {(successMessage || errorMessage) && (
+      <div
+      className={`feedback-message ${
+      successMessage ? 'success-message' : 'error-message'
+      }`}
+      >
+      {successMessage || errorMessage}
+      </div>
+      )}
       <div className="cart-items">
         {cartItems.map((item) => (
           <div key={item.id} className="cart-item">
@@ -121,8 +177,33 @@ const CartPage = () => {
       </div>
       <div className="cart-total">
         <h3>Total: ${total.toFixed(2)}</h3>
-        <button className="checkout-btn" onClick={() => navigate("/checkout")}>Proceed to Checkout</button>      
+        <button className="checkout-btn" onClick={handleCheckout}>Proceed to Checkout</button>
       </div>
+
+      {showLoginModal && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <div className="modal-content">
+              <h3>Login Required</h3>
+              <p>Please log in to proceed with checkout</p>
+              <div className="modal-buttons">
+                <button
+                  className="modal-button primary"
+                  onClick={() => navigate('/login', { state: { from: '/checkout' } })}
+                >
+                  Log In
+                </button>
+                <button
+                  className="modal-button secondary"
+                  onClick={() => setShowLoginModal(false)}
+                >
+                  Continue Shopping
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
