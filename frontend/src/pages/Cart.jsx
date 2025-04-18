@@ -78,8 +78,11 @@ const CartPage = () => {
       });
       const data = await response.json();
       if (response.ok && data.success) {
+
         refreshCart();
       } else {
+        setErrorMessage(data.error || "Failed to update quantity.");
+        setSuccessMessage('');
         setErrorMessage(data.error || "Failed to update quantity.");
         setSuccessMessage('');
       }
@@ -102,6 +105,8 @@ const CartPage = () => {
       if (response.ok && data.success) {
         refreshCart();
       } else {
+        setErrorMessage(data.error || "Failed to remove item.");
+        setSuccessMessage('');
         setErrorMessage(data.error || "Failed to remove item.");
         setSuccessMessage('');
       }
@@ -130,6 +135,15 @@ const CartPage = () => {
   return (
     <div className="cart-page">
       <h2 className="cart-title">Your Shopping Cart</h2>
+      {(successMessage || errorMessage) && (
+      <div
+      className={`feedback-message ${
+      successMessage ? 'success-message' : 'error-message'
+      }`}
+      >
+      {successMessage || errorMessage}
+      </div>
+      )}
       {(successMessage || errorMessage) && (
       <div
       className={`feedback-message ${

@@ -93,6 +93,7 @@ const ProductPage = () => {
     }
   };
 
+
   const toggleWishlist = () => {
     setWishlist(!wishlist);
   };
