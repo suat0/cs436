@@ -34,7 +34,10 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/account" element={<LoginSignup />} />
-          <Route path="/orders" element={<Orders />} />
+          <Route path="/orders" element={
+              <ProtectedRoute>
+                <Orders />
+              </ProtectedRoute>} />
           <Route path="/comments/:productId" element={<Comment />} />
           <Route path="/shop" element={<Shop />} />
           <Route path="/cart" element={<Cart />} />
@@ -52,7 +55,7 @@ function App() {
           <Route path="/category/:category" element={<CategoryPage />} />
           <Route path="/search/:search_query" element={<SearchPage />} />
           <Route path="/product/:id" element={<Product />} />
-          <Route path="/checkout/:orderId" element={<OrderConfirmation />} />
+          <Route path="/checkout/:orderId" element={<ProtectedRoute><OrderConfirmation /> </ProtectedRoute>} />
         </Routes>
       </main>
       <Footer />
