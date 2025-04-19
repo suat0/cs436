@@ -124,9 +124,17 @@ const CartPage = () => {
     if (!isAuthenticated) {
       setShowLoginModal(true);
     } else {
+      if (cartItems.length === 0) {
+        setErrorMessage("Your cart is empty. Please add items to your cart before proceeding to checkout.");
+        setSuccessMessage('');
+      } else {
+        setSuccessMessage("Proceeding to checkout...");
+        setErrorMessage('');
+        // Redirect to the checkout page
       navigate('/checkout');
     }
-  };
+  }
+};
 
   if (loading) return <p>Loading cart...</p>;
 
@@ -134,15 +142,6 @@ const CartPage = () => {
   return (
     <div className="cart-page">
       <h2 className="cart-title">Your Shopping Cart</h2>
-      {(successMessage || errorMessage) && (
-      <div
-      className={`feedback-message ${
-      successMessage ? 'success-message' : 'error-message'
-      }`}
-      >
-      {successMessage || errorMessage}
-      </div>
-      )}
       {(successMessage || errorMessage) && (
       <div
       className={`feedback-message ${
