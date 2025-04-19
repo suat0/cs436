@@ -13,7 +13,7 @@ import Product from "./pages/Product";
 import CheckoutPage from "./pages/Checkout";
 import OrderConfirmation from "./pages/OrderConfirmation";
 import ProtectedRoute from './components/ProtectedRoute';
-import { AuthProvider } from './context/AuthContext';
+
 
 function App() {
   const appContainerStyle = {

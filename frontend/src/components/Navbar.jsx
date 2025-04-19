@@ -25,7 +25,7 @@ const Navbar = () => {
   // Handle account icon click
   const handleAccountClick = () => {
     if (isAuthenticated) {
-      navigate("/account");
+      navigate("/orders");
     } else {
       navigate("/login");
     }
@@ -84,7 +84,6 @@ const handleSearchSubmit = (e) => {
     </button>
   </form>
       <div className="nav-icons">
-        <FontAwesomeIcon icon={faSearch} onClick={() => navigate("/search")} />
         <FontAwesomeIcon icon={faUser} onClick={handleAccountClick} />
         <FontAwesomeIcon icon={faHeart} onClick={() => navigate("/wishlist")} />
         <FontAwesomeIcon icon={faShoppingBag} onClick={() => navigate("/cart")} />
