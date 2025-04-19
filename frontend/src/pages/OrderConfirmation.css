@@ -1,0 +1,92 @@
+.confirmation-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px;
+    background-color: #f9f9f9;
+    min-height: 100vh;
+  }
+  
+  .confirmation-card {
+    background-color: #ffffff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    max-width: 800px;
+    width: 100%;
+  }
+  
+  .confirmation-title {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    color: #C49B8F;
+  }
+  
+  .confirmation-subtext {
+    margin-bottom: 1rem;
+    color: #333;
+  }
+  
+  .button-group {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .download-btn {
+    padding: 10px 20px;
+    background-color: #C49B8F;
+    color: white;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .download-btn:hover {
+    background-color: #A87C71;
+  }
+  
+  .invoice-preview {
+    width: 100%;
+    height: 600px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+  .error-message {
+    background-color: #ffe5e5;
+    color: #b20000;
+    border: 1px solid #ffb3b3;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    margin-bottom: 20px;
+  
+    /* Make it look like the card and center it */
+    max-width: 800px;
+    width: 100%;
+    text-align: center;
+  
+    /* Center it in container */
+    display: block;
+  }
+  
+  .confirmation-content {
+    max-width: 800px;
+    width: 100%;
+  }
+
+  .success-message {
+    background-color: #e6ffed;
+    color: #2b7a4b;
+    border: 1px solid #b2dfc2;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    text-align: center;
+    max-width: 800px;
+    width: 100%;
+  }

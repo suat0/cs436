@@ -4,104 +4,148 @@ const router = require('../routes/auth');
 // Mask card details to protect sensitive data
 
 class checkoutController {
+  constructor() {
+    this.checkout = this.checkout.bind(this);
+  }
+
   // Mask card number (keep first 4 and last 4 digits visible)
   maskCardNumber(cardNumber) {
     return cardNumber.slice(0, 4) + '********' + cardNumber.slice(-4);
   }
   
   // Validate Card Number Format (Basic Check)
-  validateCardNumber (cardNumber) {
+  validateCardNumber(cardNumber) {
     return /^\d{16}$/.test(cardNumber);
-  };
+  }
   
   // Validate CVV Format (3 or 4 digits)
-  validateCVV (cvv)  {
+  validateCVV(cvv) {
     return /^\d{3,4}$/.test(cvv);
-  };
+  }
   
   // Validate Expiry Date (Format MM/YY or MM/YYYY)
-  validateExpiryDate (expiryDate) {
+  validateExpiryDate(expiryDate) {
     const regex = /^(0[1-9]|1[0-2])\/(\d{2}|\d{4})$/;
     return regex.test(expiryDate);
-  };
+  }
 
   async checkout(req, res) {
     try {
-      const { cartItems, paymentMethod, address, paymentDetails } = req.body;
-      console.log('Received Checkout Request:', req.body);
+      // Notice how we renamed them to match your DB columns
+      // e.g. payment_name, delivery_address, etc.
+      const { cartItems, payment_name, delivery_address, paymentDetails } = req.body;
+  
+      // Basic checks
       if (!cartItems || cartItems.length === 0) {
         return res.status(400).json({ error: 'Your cart is empty!' });
       }
-      if (!paymentMethod || !address) {
-        return res.status(400).json({ error: 'Payment method and address are required!' });
+      if (!payment_name || !delivery_address || !paymentDetails) {
+        return res.status(400).json({ error: 'payment_name, delivery_address, and paymentDetails are required!' });
       }
-      // Validate Payment Details
-      if (
-        !validateCardNumber(paymentDetails.cardNumber) ||
-        !validateCVV(paymentDetails.cvv) ||
-        !validateExpiryDate(paymentDetails.expiryDate)
-      ) {
+  
+      // Validate payment details
+      const { cardNumber, cvv, expiryDate } = paymentDetails;
+      if (!this.validateCardNumber(cardNumber) || !this.validateCVV(cvv) || !this.validateExpiryDate(expiryDate)) {
         return res.status(400).json({ error: 'Invalid payment details.' });
       }
-      // Mask card details before storing (do not store full card details)
-      const maskedCardNumber = maskCardNumber(paymentDetails.cardNumber);
-      // Start transaction
-      await db.query('START TRANSACTION');  
-      // Calculate total price
+  
+      // Mask the card number (optional) before storing
+      const maskedCard = this.maskCardNumber(cardNumber);
+  
+      // Start a DB transaction
+      await db.query('START TRANSACTION');
+  
+      // Calculate total price and prepare to insert order_items
       let totalPrice = 0;
-      const productData = []; // Store product data for inserting order items
+      const orderItemsData = [];
+  
       for (const item of cartItems) {
-        const [product] = await db.query('SELECT * FROM products WHERE id = ?', [item.productId]);
-        console.log('Product Query Result:', product);
-        if (!product || product.length === 0 || product[0].quantity < item.quantity) {
+        // Make sure product exists and has enough stock
+        const [productRows] = await db.query('SELECT * FROM products WHERE id = ?', [item.productId]);
+        if (!productRows || productRows.length === 0) {
           await db.query('ROLLBACK');
-          return res.status(400).json({ error: `Product with ID ${item.productId} is out of stock!` });
+          return res.status(400).json({ error: `Product with ID ${item.productId} does not exist.` });
         }
-        totalPrice += product[0].price * item.quantity;
-        productData.push({
+        const product = productRows[0];
+        if (product.quantity < item.quantity) {
+          await db.query('ROLLBACK');
+          return res.status(400).json({ error: `Not enough stock for product ID ${item.productId}.` });
+        }
+  
+        // Accumulate total price
+        totalPrice += product.price * item.quantity;
+  
+        orderItemsData.push({
           productId: item.productId,
           quantity: item.quantity,
-          price: product[0].price, // Correct price from product
+          price: product.price
         });
       }
-      console.log('Total Price Calculated:', totalPrice);
-      // Insert order into the database
-      const [orderResult] = await db.query(
-        'INSERT INTO orders (user_id, total_price, payment_method, address, status, masked_card_number) VALUES (?, ?, ?, ?, ?, ?)',
-        [req.user.id, totalPrice, paymentMethod, address, 'processing', maskedCardNumber]
-      );
+  
+      // Insert into `orders` table
+      // Make sure the columns match exactly the schema in your DB
+      const [orderResult] = await db.query(`
+        INSERT INTO orders 
+        (user_id, total_price, delivery_address, status, payment_name, payment_card, payment_expiry, payment_cvc)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      `, [
+        req.user.id,          // user_id
+        totalPrice,           // total_price
+        delivery_address,     // delivery_address
+        'processing',         // status
+        payment_name,         // payment_name
+        maskedCard,           // payment_card (store masked or partial)
+        expiryDate,           // payment_expiry
+        cvv                   // payment_cvc (Note: Not recommended to store CVV in real production)
+      ]);
+  
       const orderId = orderResult.insertId;
-      console.log('Order Insert Result:', orderResult);
-      // Insert order items and update product quantity
-      for (const item of productData) {
-        await db.query(
-          'INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)',
-          [orderId, item.productId, item.quantity, item.price]
-        );
-        // Update product quantity after order
-        await db.query(
-          'UPDATE products SET quantity = quantity - ? WHERE id = ? AND quantity >= ?',
-          [item.quantity, item.productId, item.quantity]
-        );
-        // Check if quantity went below 0 after update
-        const [updatedProduct] = await db.query(
-          'SELECT quantity FROM products WHERE id = ?',
-          [item.productId]
-        );
-        if (updatedProduct[0].quantity < 0) {
-          // Rollback transaction if product goes negative
-          await db.query('ROLLBACK');
-          throw new Error(`Product ${item.productId} is out of stock after update.`);
-        }
+  
+      // Insert order_items, update product quantities
+      for (const item of orderItemsData) {
+        await db.query(`
+          INSERT INTO order_items (order_id, product_id, quantity, price_at_purchase)
+          VALUES (?, ?, ?, ?)
+        `, [ orderId, item.productId, item.quantity, item.price ]);
+  
+        // Update product stock
+        await db.query(`
+          UPDATE products 
+          SET quantity_in_stock = quantity_in_stock - ?
+          WHERE id = ? AND quantity_in_stock >= ?
+        `, [ item.quantity, item.productId, item.quantity ]);
       }
-      // Commit the transaction
+  
+      // Commit transaction
       await db.query('COMMIT');
+  
+      // Return response
       res.status(201).json({ message: 'Order placed successfully!', orderId });
+  
+      // Optional: simulate shipping updates
+      setTimeout(async () => {
+        try {
+          await db.query('UPDATE orders SET status = ? WHERE id = ?', ['in-transit', orderId]);
+          console.log(`Order ${orderId} updated to in-transit.`);
+        } catch (err) {
+          console.error(`Error updating order ${orderId} to in-transit:`, err);
+        }
+      }, 5000);
+  
+      setTimeout(async () => {
+        try {
+          await db.query('UPDATE orders SET status = ? WHERE id = ?', ['delivered', orderId]);
+          console.log(`Order ${orderId} updated to delivered.`);
+        } catch (err) {
+          console.error(`Error updating order ${orderId} to delivered:`, err);
+        }
+      }, 10000);
+  
     } catch (error) {
       console.error('Checkout Error Details:', error);
       await db.query('ROLLBACK');
       res.status(500).json({ error: 'Something went wrong during checkout.' });
     }
   }
-};
+}
 module.exports = new checkoutController();

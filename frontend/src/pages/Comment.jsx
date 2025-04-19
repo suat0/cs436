@@ -49,6 +49,24 @@ export default function Comment() {
     }
   }, [productId, currentUserId]); 
 
+  // Guest users: fetch public comments and ratings
+useEffect(() => {
+  if (currentUserId === null) {
+    // Fetch only approved comments and public ratings
+    fetch(`/api/comments/product/${productId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) setReviews(data.comments);
+      });
+
+    fetch(`/api/ratings/${productId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) setAverage(data.average);
+      });
+  }
+}, [productId, currentUserId]);
+
   const handlePost = async () => {
     if (comment.trim() === '' && rating === 0) return;
 
@@ -120,9 +138,11 @@ export default function Comment() {
       setEditingReviewId(null);
 
       // Refresh comments
-      const res = await fetch(`/api/comments/product/${productId}?userId=${currentUserId}`);
-      const refreshCommentData = await res.json();
-      if (refreshCommentData.success) setReviews(refreshCommentData.comments);
+      const res = await fetch(`/api/comments/product/${productId}?userId=${currentUserId}`, {
+        credentials: 'include',
+      });
+      const commentData = await res.json();
+      if (commentData.success) setReviews(commentData.comments);
 
       // Refresh rating
       const ratingRefresh = await fetch(`/api/ratings/${productId}`);
@@ -257,4 +277,3 @@ export default function Comment() {
     </div>
   );
 }
-

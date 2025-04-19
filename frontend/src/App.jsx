@@ -11,7 +11,9 @@ import CategoryPage from "./pages/CategoryPage";
 import SearchPage from "./pages/SearchPage";
 import Product from "./pages/Product";
 import CheckoutPage from "./pages/Checkout";
-
+import OrderConfirmation from "./pages/OrderConfirmation";
+import ProtectedRoute from './components/ProtectedRoute';
+import { AuthProvider } from './context/AuthContext';
 
 function App() {
   const appContainerStyle = {
@@ -36,10 +38,21 @@ function App() {
           <Route path="/comments/:productId" element={<Comment />} />
           <Route path="/shop" element={<Shop />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/login" element={<LoginSignup />} />
+            
+          {/* Protected routes */}
+          <Route
+            path="/checkout"
+            element={
+              <ProtectedRoute>
+                <CheckoutPage />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/category/:category" element={<CategoryPage />} />
           <Route path="/search/:search_query" element={<SearchPage />} />
           <Route path="/product/:id" element={<Product />} />
+          <Route path="/checkout/:orderId" element={<OrderConfirmation />} />
         </Routes>
       </main>
       <Footer />
