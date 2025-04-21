@@ -82,6 +82,7 @@ const ProductPage = () => {
       if (addItemResponse.ok) {
         setSuccessMessage(`${quantity} item(s) added to cart.`);
         setErrorMessage('');
+        setQuantity(1);
       } else {
         setErrorMessage(addItemData.error || 'Failed to add item to cart.');
         setSuccessMessage('');
@@ -126,7 +127,9 @@ const ProductPage = () => {
         <div className="quantity-selector">
           <button onClick={() => setQuantity(q => Math.max(1, q - 1))}>-</button>
           <span>{quantity}</span>
-          <button onClick={() => setQuantity(q => q + 1)}>+</button>
+          <button onClick={() => setQuantity(q => q + 1)} 
+          disabled={quantity >= product.quantity_in_stock}
+          > + </button>
         </div>
         <div className="actions">
         <button 

@@ -123,6 +123,13 @@
     color: #666;
     cursor: not-allowed;
   }
+
+  .quantity-selector button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+  
   
   
   @media (max-width: 768px) {
