@@ -35,7 +35,9 @@ export default function OrderConfirmation() {
     if (sendingEmail) return;
   
     setSendingEmail(true);
-    fetch(`http://localhost:5001/api/invoices/send/${orderId}`)
+    fetch(`http://localhost:5001/api/invoices/send/${orderId}`, {
+      credentials: 'include',
+    })
       .then(res => res.json())
       .then(data => {
         if (data.success) {
