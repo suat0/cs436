@@ -124,6 +124,14 @@ const ProductPage = () => {
             ? `In Stock (${product.quantity_in_stock} available)`
             : 'Out of Stock'}
         </p>
+        <div className="product-extra-details">
+        <p><strong>Product ID:</strong> {product.id}</p>
+        <p><strong>Model:</strong> {product.model}</p>
+        <p><strong>Serial Number:</strong> {product.serial_number}</p>
+        <p><strong>Warranty Status:</strong> {product.warranty_status ? 'Covered' : 'No Warranty'}</p>
+        <p><strong>Distributor:</strong> {product.distributor_info}</p>
+        </div>
+
         <div className="quantity-selector">
           <button onClick={() => setQuantity(q => Math.max(1, q - 1))}>-</button>
           <span>{quantity}</span>
