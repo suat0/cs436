@@ -129,7 +129,13 @@ const ProductPage = () => {
           <button onClick={() => setQuantity(q => q + 1)}>+</button>
         </div>
         <div className="actions">
-          <button onClick={addToCart} className="add-to-cart">Add to Cart</button>
+        <button 
+           onClick={addToCart} 
+           className="add-to-cart" 
+           disabled={product.quantity_in_stock === 0}
+          >
+          {product.quantity_in_stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+          </button>
           <div className="sub-actions">
             <button onClick={toggleWishlist} className={wishlist ? 'wishlisted' : ''}>
               {wishlist ? 'Wishlisted' : 'Add to Wishlist'}
