@@ -16,6 +16,9 @@ const paymentRoutes = require('./routes/payment');
 const authenticate = require('./middleware/authMiddleware');
 const invoiceRoutes = require('./routes/invoice');
 
+const commentRoutes = require("./routes/comments");
+const ratingRoutes = require("./routes/ratings"); 
+
 
 
 // Register payment API route
@@ -48,6 +51,9 @@ app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/invoices', invoiceRoutes);
+
+app.use('/api/comments', commentRoutes);
+app.use('/api/ratings', ratingRoutes);
 
 // Serve React frontend
 app.use(express.static(path.join(__dirname, "../../frontend/build")));
