@@ -14,7 +14,9 @@ export default function OrderConfirmation() {
 
 
   useEffect(() => {
-    fetch(`http://localhost:5001/api/invoices/${orderId}`)
+    fetch(`http://localhost:5001/api/invoices/${orderId}`, {
+      credentials: 'include',
+    })
       .then(res => {
         if (!res.ok) throw new Error("Failed to fetch invoice");
         return res.blob();

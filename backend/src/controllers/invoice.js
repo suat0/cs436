@@ -9,13 +9,14 @@ const logoPath = path.join(__dirname, '../../../frontend/src/images/logo_white.j
 const logoBase64 = fs.readFileSync(logoPath, { encoding: 'base64' });
 const logoDataURI = `data:image/png;base64,${logoBase64}`;
 
-// === Shared PDF generator ===
 function generateInvoicePDF(order, itemsResult, callback) {
   const doc = new PDFDocument({ margin: 50 });
   const buffers = [];
 
   doc.on("data", buffers.push.bind(buffers));
   doc.on("end", () => callback(Buffer.concat(buffers)));
+
+  const invoiceDate = new Date().toLocaleDateString();
 
   // === Logo (top-left) ===
   doc.image(logoPath, 30, 45, { width: 70 });
@@ -27,16 +28,26 @@ function generateInvoicePDF(order, itemsResult, callback) {
   doc.text("Istanbul", { align: "right" });
   doc.text("Türkiye", { align: "right" });
 
-  doc.moveDown(2);
+  // === Invoice Info ===
+  doc.font("Helvetica").fontSize(10);
+  doc.text(`Invoice #: INV-${order.id}`, 50, 130);
+  doc.text(`Invoice Date: ${invoiceDate}`, 50, 145);
 
-  // === Customer Info (left) ===
-  doc.font("Helvetica-Bold").text(order.customer_name, 50, 140);
-  doc.font("Helvetica").text(order.delivery_address, 50, doc.y);
+  // === Customer Info ===
+  doc.moveDown(2);
+  doc.font("Helvetica-Bold").text("Billing To:", 50, doc.y);
+  doc.font("Helvetica").text(order.customer_name, 50, doc.y + 15);
+  doc.text(order.delivery_address, 50, doc.y + 15);
   doc.text(order.email, 50, doc.y + 15);
 
-  doc.moveDown(3);
+  // === Payment Info ===
+  doc.moveDown(2);
+  doc.font("Helvetica-Bold").text("Payment Info:", 50, doc.y);
+  doc.font("Helvetica").text(`Card Holder: ${order.payment_name}`, 50, doc.y + 15);
+  doc.text(`Card: ${order.payment_card}`, 50, doc.y + 15);
 
   // === Table Header ===
+  doc.moveDown(3);
   const tableTop = doc.y;
   const col1 = 50;
   const col2 = 250;
@@ -77,9 +88,13 @@ function generateInvoicePDF(order, itemsResult, callback) {
 
   // === Footer ===
   doc.font("Helvetica").fontSize(12).text("Thank you for shopping with us!", 0, 700, { align: "center" });
+  doc.fontSize(8).text("Pearl Jewelry • www.pearl.com • support@pearl.com", 50, 770, {
+    align: 'center',
+  });
 
   doc.end();
 }
+
 
 // === Route: Generate and view invoice PDF ===
 exports.generateInvoice = async (req, res) => {
@@ -108,7 +123,7 @@ exports.generateInvoice = async (req, res) => {
 
     generateInvoicePDF(order, itemsResult, (pdfBuffer) => {
       res.setHeader("Content-Type", "application/pdf");
-      res.setHeader("Content-Disposition", `attachment; filename=invoice_${orderId}.pdf`);
+      res.setHeader("Content-Disposition", "inline; filename=invoice.pdf");
       res.send(pdfBuffer);
     });
 
