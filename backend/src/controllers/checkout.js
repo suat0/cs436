@@ -121,7 +121,10 @@ class checkoutController {
   
       // Return response
       res.status(201).json({ message: 'Order placed successfully!', orderId });
-  
+
+      //reset shopping cart
+      await db.query('DELETE FROM shopping_cart WHERE user_id = ?', [req.user.id]);
+      console.log('Shopping cart reset for user:', req.user.id);
       // Optional: simulate shipping updates
       setTimeout(async () => {
         try {
