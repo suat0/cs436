@@ -17,6 +17,8 @@ const CategoryPage = () => {
 
   useEffect(() => {
     const fetchProducts = async () => {
+      setLoading(true);
+      setError(null);
       try {
         const catRes = await fetch('/api/categories?active=true', {
           headers: {
@@ -67,51 +69,63 @@ const CategoryPage = () => {
     fetchProducts();
   }, [category, sort]);
 
-  if (loading) return <p>Loading products...</p>;
-  if (error) return <p>Error: {error}</p>;
-
   return (
     <div className="category-page">
-      <h2 className="category-title">
-        {category.charAt(0).toUpperCase() + category.slice(1)}
-      </h2>
-
-      <div className="sort-header">
-        <div className="sort-align-right">
-          <label>Sort by: </label>
-          <select value={sort} onChange={(e) => setSort(e.target.value)}>
-            <option value="name">Name (A–Z)</option>
-            <option value="name_desc">Name (Z–A)</option>
-            <option value="price">Price (Low to High)</option>
-            <option value="price_desc">Price (High to Low)</option>
-            <option value="popularity">Popularity (High to Low)</option>
-            <option value="popularity_asc">Popularity (Low to High)</option>
-          </select>
+      {loading ? ( 
+        <div className="loading-container">
+          <div className="loader" />
         </div>
-      </div>
+      ) : error ? (
+        <div className="error-banner">
+          <p>Error loading products: {error}</p>
+        </div>
+      ) : (
+        <>
+          <h2 className="category-title">
+            {category.charAt(0).toUpperCase() + category.slice(1)}
+          </h2>
 
-      <div className="product-grid">
-        {products.map((product) => (
-          <div className="product-card" key={product.id}>
-            <div
-              className="product-image"
-              onClick={() => navigate(`/product/${product.id}`)}
-            >
-              <img src={product.image_url} alt={product.name} />
-            </div>
-            <div className="product-actions">
-              <FontAwesomeIcon icon={faShoppingBag} onClick={() => addToCart(product)} />
-              <FontAwesomeIcon icon={faHeart} />
-              <FontAwesomeIcon icon={faExchangeAlt} />
-              <FontAwesomeIcon icon={faSearch} />
-            </div>
-            <div className="product-info">
-              <h3>{product.name}</h3>
-              <p>${product.price}</p>
+          <div className="sort-header">
+            <div className="sort-align-right">
+              <label>Sort by: </label>
+              <select value={sort} onChange={(e) => setSort(e.target.value)}>
+                <option value="name">Name (A–Z)</option>
+                <option value="name_desc">Name (Z–A)</option>
+                <option value="price">Price (Low to High)</option>
+                <option value="price_desc">Price (High to Low)</option>
+                <option value="popularity">Popularity (High to Low)</option>
+                <option value="popularity_asc">Popularity (Low to High)</option>
+              </select>
             </div>
           </div>
-        ))}
-      </div>
+          <div className="product-grid">
+            {products.length > 0 ? (
+              products.map((product) => (
+                <div className="product-card" key={product.id}>
+                  <div
+                    className="product-image"
+                    onClick={() => navigate(`/product/${product.id}`)}
+                  >
+                    <img src={product.image_url} alt={product.name} />
+                  </div>
+                  <div className="product-actions">
+                    <FontAwesomeIcon icon={faShoppingBag} onClick={() => addToCart(product)} />
+                    <FontAwesomeIcon icon={faHeart} />
+                    <FontAwesomeIcon icon={faExchangeAlt} />
+                    <FontAwesomeIcon icon={faSearch} />
+                  </div>
+                  <div className="product-info">
+                    <h3>{product.name}</h3>
+                    <p>${product.price}</p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="no-products">No products in this category.</div>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 };
