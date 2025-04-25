@@ -24,8 +24,7 @@ const checkAuthentication = (req, res, next) => {
             const decoded = jwt.verify(token, "your_secret_key"); 
             req.user = decoded; 
         } catch (error) {
-            return res.status(401).json({ error: "Unauthorized: Invalid token" }); //////////???????
-        }
+            return res.status(401).json({ error: "Unauthorized: Invalid token" });
     }
 
     next();
