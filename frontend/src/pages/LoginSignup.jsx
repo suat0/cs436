@@ -46,9 +46,9 @@ const LoginSignup = () => {
       const data = await response.json(); 
       console.log("Response data:", data);
       if (response.ok) {
-        if (isLogin) {
-          await login(formData.email, formData.password); // updates context state
-        }
+        
+        await login(formData.email, formData.password); // updates context state
+       
         setErrorMessage("");
         setSuccessMessage(isLogin ? "Login successful!" : "Signup successful!");
   
