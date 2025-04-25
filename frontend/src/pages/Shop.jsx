@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import ReactLoading from 'react-loading';
 import { useNavigate } from "react-router-dom";
 import "./Shop.css";
 
@@ -66,36 +67,41 @@ const Shop = () => {
 
   return (
     <div className="shop-page">
-      {loading && <div className="loading">Loading categories...</div>}
-      
-      {error && (
-        <div className="error-banner">
-          <p>Error loading categories: {error}</p>
-          <p>Showing placeholder categories for development</p>
-        </div>
-      )}
-
-      <div className="category-grid">
-        {displayCategories.length > 0 ? (
-          displayCategories.map((category) => (
-            <div
-              key={category.id}
-              className="category-card"
-              onClick={() => navigate(`/category/${category.name.toLowerCase()}`)}
-              style={{ 
-                backgroundImage: category.image_url ? `url(${category.image_url})` : 'none',
-                backgroundColor: !category.image_url ? '#f0f0f0' : 'transparent'
-              }}
-            >
-              <div className="category-overlay">
-                <h3>{category.name}</h3>
-              </div>
+      {loading ? ( 
+        <div className="loading-container">
+          <ReactLoading type="spin" color="#808080" height={50} width={50} />
+          </div>
+      ) : (
+        <>
+          {error && (
+            <div className="error-banner">
+              <p>Error loading categories: {error}</p>
+              <p>Showing placeholder categories for development</p>
             </div>
-          ))
-        ) : (
-          <div className="no-categories">No categories available.</div>
-        )}
-      </div>
+          )}
+          <div className="category-grid">
+            {displayCategories.length > 0 ? (
+              displayCategories.map((category) => (
+                <div
+                  key={category.id}
+                  className="category-card"
+                  onClick={() => navigate(`/category/${category.name.toLowerCase()}`)}
+                  style={{ 
+                    backgroundImage: category.image_url ? `url(${category.image_url})` : 'none',
+                    backgroundColor: !category.image_url ? '#f0f0f0' : 'transparent'
+                  }}
+                >
+                  <div className="category-overlay">
+                    <h3>{category.name}</h3>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="no-categories">No categories available.</div>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 };
