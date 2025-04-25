@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const db = require('../controllers/db');
+const cartController= require('../controllers/cart');
 
 class authController {
     verifyToken(token) {
@@ -103,39 +104,41 @@ class authController {
             const [users] = await db.query("SELECT * FROM Users WHERE email = ?", [email]);
             
             if (users.length === 0) {
-                console.log("No user found with email:", email);
                 return res.status(404).json({ error: "User not found. Please check your email." });
             }
-    
+
             const user = users[0];
-            console.log("Found user:", { id: user.id, email: user.email }); // Don't log password  
-            
             const isMatch = await bcrypt.compare(password, user.password);
             if (!isMatch) {
-                console.log("Password mismatch for user:", user.email);
                 return res.status(401).json({ error: "Incorrect password. Please try again." });
             }
             
             const token = jwt.sign(
-                { 
-                    id: user.id, 
-                    email: user.email,
-                    name: user.name 
-                }, 
+                { id: user.id, email: user.email, name: user.name }, 
                 "your_secret_key", 
                 { expiresIn: "1h" }
             );
             
-            console.log("Setting cookie with token");
             res.cookie("token", token, {
                 httpOnly: true,
-                secure: false, // Set to false for local development
+                secure: false,  // Set to true in production with HTTPS
                 sameSite: 'lax',
-                maxAge: 3600000, // 1 hour
+                maxAge: 3600000,
                 path: '/'
             });
-            
-            console.log("Sending success response");
+
+            // Merge Cart Logic
+            const sessionId = req.sessionID;
+            const { cart: sessionCart, items: sessionItems } = await cartController.fetchCartData(null, sessionId);
+            console.log("Session Cart Data:", sessionCart);
+            console.log("Session Cart Items:", sessionItems);
+            if (sessionItems.length > 0) {
+                console.log(`Merging ${sessionItems.length} items from session cart to user cart`);
+                await cartController.mergeCarts(user.id, sessionCart, sessionId);
+            } else {
+                console.log("No session cart items to merge.");
+            }
+
             res.status(200).json({ 
                 success: true,
                 message: "Login successful",
@@ -145,7 +148,7 @@ class authController {
                     email: user.email
                 }
             });
-    
+
         } catch (error) {
             console.error("Login Error:", error);
             res.status(500).json({ error: "Error logging in" });
