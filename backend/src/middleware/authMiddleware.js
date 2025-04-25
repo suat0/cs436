@@ -16,4 +16,19 @@ const isAuthenticated = (req, res, next) => {
     }
 };
 
-module.exports = isAuthenticated;
+const checkAuthentication = (req, res, next) => {
+    const token = req.cookies.token;
+
+    if (token) {
+        try {
+            const decoded = jwt.verify(token, "your_secret_key"); 
+            req.user = decoded; 
+        } catch (error) {
+            return res.status(401).json({ error: "Unauthorized: Invalid token" });
+    }
+
+    next();
+};
+
+module.exports.isAuthenticated = isAuthenticated;
+module.exports.checkAuthentication = checkAuthentication;

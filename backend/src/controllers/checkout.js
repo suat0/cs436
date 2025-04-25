@@ -1,5 +1,5 @@
 const db = require('../controllers/db'); 
-const authenticate = require('../middleware/authMiddleware');
+const authenticate = require('../middleware/authMiddleware').isAuthenticated;
 const router = require('../routes/auth');
 // Mask card details to protect sensitive data
 

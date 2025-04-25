@@ -13,7 +13,7 @@ const cartRoutes = require("./routes/cart");
 const checkoutRoutes = require('./routes/checkout');
 const paymentRoutes = require('./routes/payment');
 
-const authenticate = require('./middleware/authMiddleware');
+const authenticate = require('./middleware/authMiddleware').isAuthenticated;
 const invoiceRoutes = require('./routes/invoice');
 
 const commentRoutes = require("./routes/comments");
