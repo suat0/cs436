@@ -69,26 +69,26 @@ class authController {
     };
     signup = async (req, res) => {
         try {
-            const { Name, Email, Password } = req.body;
+            const { name, email, password } = req.body;
             //console.log("Request Body:", req.body); 
     
-            if (!Name || !Email || !Password) {
+            if (!name || !email || !password) {
                 return res.status(400).json({ error: "Name, Email, and Password are required!" });
             }
     
             const EmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!EmailRegex.test(Email)) {
+            if (!EmailRegex.test(email)) {
                 return res.status(400).json({ error: "Invalid Email format. Please enter a valid Email address." });
             }
-            const [existingUser] = await db.query("SELECT * FROM Users WHERE Email = ? OR name = ?", [Email, Name]);
+            const [existingUser] = await db.query("SELECT * FROM Users WHERE Email = ? OR name = ?", [email, name]);
     
             if (existingUser.length > 0) {
                 return res.status(400).json({ error: "User with this Email or Name already exists" });
             }
     
-            const hashedPassword = await bcrypt.hash(Password, 10);
+            const hashedPassword = await bcrypt.hash(password, 10);
     
-            await db.query("INSERT INTO Users (name, Email, Password) VALUES (?, ?, ?)", [Name, Email, hashedPassword]);
+            await db.query("INSERT INTO Users (name, Email, Password) VALUES (?, ?, ?)", [name, email, hashedPassword]);
     
             res.status(201).json({ message: "User registered successfully" });
         } catch (error) {
