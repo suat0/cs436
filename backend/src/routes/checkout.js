@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const checkoutController = require('../controllers/checkout');
-const authenticate = require('../middleware/authMiddleware');
+const authenticate = require('../middleware/authMiddleware').isAuthenticated;
 
 // Temporary middleware to simulate a logged-in user with id 1
 router.use(authenticate);

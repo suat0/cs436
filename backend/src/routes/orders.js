@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../controllers/db');
-const authenticate = require('../middleware/authMiddleware');
+const authenticate = require('../middleware/authMiddleware').isAuthenticated;
 
 // GET /api/orders - Get orders for the authenticated user
 router.get('/', authenticate, async (req, res) => {

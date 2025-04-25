@@ -243,6 +243,52 @@ async getCart(req, res) {
       });
     }
   }
+  // Merge two carts (e.g., when a user logs in)
+  async mergeCarts(userId, sessionCart, sessionId) {
+    try {
+      // Get or create user cart
+      let [userCartRows] = await db.execute('SELECT * FROM Shopping_Cart WHERE user_id = ?', [userId]);
+      let userCart = userCartRows[0];
+  
+      if (!userCart) {
+        await db.execute('INSERT INTO Shopping_Cart (user_id) VALUES (?)', [userId]);
+        [userCartRows] = await db.execute('SELECT * FROM Shopping_Cart WHERE user_id = ?', [userId]);
+        userCart = userCartRows[0];
+      }
+  
+      // Get items from session cart
+      const [sessionItems] = await db.execute('SELECT * FROM Cart_Items WHERE cart_id = ?', [sessionCart.id]);
+  
+      for (const item of sessionItems) {
+        const [existing] = await db.execute(
+          'SELECT * FROM Cart_Items WHERE cart_id = ? AND product_id = ?',
+          [userCart.id, item.product_id]
+        );
+  
+        if (existing.length > 0) {
+          // Update quantity
+          const newQuantity = existing[0].quantity + item.quantity;
+          await db.execute('UPDATE Cart_Items SET quantity = ? WHERE id = ?', [newQuantity, existing[0].id]);
+        } else {
+          // Insert new item
+          await db.execute(
+            'INSERT INTO Cart_Items (cart_id, product_id, quantity) VALUES (?, ?, ?)',
+            [userCart.id, item.product_id, item.quantity]
+          );
+        }
+      }
+      //logger
+      console.log(`Merged ${sessionItems.length} items from session cart to user cart`);
+  
+      // Clear session cart
+      await db.execute('DELETE FROM Cart_Items WHERE cart_id = ?', [sessionCart.id]);
+  
+      console.log('Carts merged successfully');
+    } catch (error) {
+      console.error('Error merging carts:', error);
+      throw error;
+    }
+  }
 
   // Remove an item from the cart
   async removeItem(req, res) {
@@ -295,6 +341,71 @@ async getCart(req, res) {
       });
     }
   }
+
+  // Helper: Fetch cart data without needing req/res
+  async fetchCartData(userId, sessionId) {
+    let query, params;
+    if (userId) {
+      query = 'SELECT * FROM Shopping_Cart WHERE user_id = ?';
+      params = [userId];
+    } else if (sessionId) {
+      query = 'SELECT * FROM Shopping_Cart WHERE session_id = ?';
+      params = [sessionId];
+    } else {
+      throw new Error('No identifier provided');
+    }
+
+    const [rows] = await db.execute(query, params);
+    let cart;
+
+    if (rows.length === 0) {
+      // Create new cart
+      if (userId) {
+        await db.execute('INSERT INTO Shopping_Cart (user_id) VALUES (?)', [userId]);
+        const [newRows] = await db.execute('SELECT * FROM Shopping_Cart WHERE user_id = ?', [userId]);
+        cart = newRows[0];
+      } else {
+        await db.execute('INSERT INTO Shopping_Cart (session_id) VALUES (?)', [sessionId]);
+        const [newRows] = await db.execute('SELECT * FROM Shopping_Cart WHERE session_id = ?', [sessionId]);
+        cart = newRows[0];
+      }
+    } else {
+      cart = rows[0];
+    }
+
+    // Get cart items with product details
+    const [rowsItems] = await db.execute(`
+      SELECT 
+        ci.id as id, 
+        ci.cart_id, 
+        ci.product_id, 
+        ci.quantity,
+        p.name, 
+        p.price, 
+        p.image_url, 
+        p.description
+      FROM Cart_Items ci
+      JOIN Products p ON ci.product_id = p.id
+      WHERE ci.cart_id = ?
+    `, [cart.id]);
+
+    const items = rowsItems.map(row => ({
+      id: row.id,
+      cart_id: row.cart_id,
+      product_id: row.product_id,
+      quantity: row.quantity,
+      product: {
+        name: row.name,
+        price: row.price,
+        image_url: row.image_url,
+        description: row.description
+      }
+    }));
+
+    return { cart, items };
+  }
 }
 
 module.exports = new CartController();
+
+  
