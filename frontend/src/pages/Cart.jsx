@@ -6,7 +6,6 @@ import { useAuth } from '../context/AuthContext';
 const CartPage = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
-  console.log("isAuthenticated:", isAuthenticated);
   const [cart, setCart] = useState(null);
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -35,7 +34,6 @@ const CartPage = () => {
           "Content-Type": "application/json"
         }
       });
-      console.log("Cart API response status:", response.status);
       const data = await response.json();
       if (response.ok && data.success) {
         setCart(data.cart);
@@ -53,12 +51,13 @@ const CartPage = () => {
 
     } finally {
       setLoading(false);
+      refreshCart();
     }
   };
 
   useEffect(() => {
     refreshCart();
-  }, []);
+  }, [refreshCart]);
 
   // Update the quantity for a given cart item
   const updateQuantity = async (itemId, delta) => {
@@ -84,6 +83,8 @@ const CartPage = () => {
       } catch (err) {
         console.error("Error removing item via updateQuantity:", err);
         setErrorMessage("Network error when removing item.");
+      } finally {
+        refreshCart();
       }
       return;
     }
@@ -105,6 +106,8 @@ const CartPage = () => {
       }
     } catch (err) {
       console.error("Error updating quantity:", err);
+    } finally {
+      refreshCart();
     }
   };
 
@@ -127,6 +130,8 @@ const CartPage = () => {
       }
     } catch (err) {
       console.error("Error removing item:", err);
+    } finally {
+      refreshCart();
     }
   };
 
@@ -147,10 +152,10 @@ const CartPage = () => {
         setSuccessMessage("Proceeding to checkout...");
         setErrorMessage('');
         // Redirect to the checkout page
-      navigate('/checkout');
+        navigate('/checkout');
+      }
     }
-  }
-};
+  };
 
   if (loading) return <p>Loading cart...</p>;
 
