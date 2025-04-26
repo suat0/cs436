@@ -77,11 +77,8 @@ const CartPage = () => {
       });
       const data = await response.json();
       if (response.ok && data.success) {
-
         refreshCart();
       } else {
-        setErrorMessage(data.error || "Failed to update quantity.");
-        setSuccessMessage('');
         setErrorMessage(data.error || "Failed to update quantity.");
         setSuccessMessage('');
       }
@@ -104,8 +101,6 @@ const CartPage = () => {
       if (response.ok && data.success) {
         refreshCart();
       } else {
-        setErrorMessage(data.error || "Failed to remove item.");
-        setSuccessMessage('');
         setErrorMessage(data.error || "Failed to remove item.");
         setSuccessMessage('');
       }
