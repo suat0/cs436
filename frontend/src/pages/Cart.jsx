@@ -65,7 +65,28 @@ const CartPage = () => {
     const item = cartItems.find((item) => item.id === itemId);
     if (!item) return;
     const newQuantity = item.quantity + delta;
-    if (newQuantity < 1) return;
+    if (newQuantity < 1) {
+      try {
+        const response = await fetch(`/api/cart/${cart.id}/items/${itemId}`, {
+          method: "DELETE",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          }
+        });
+        const data = await response.json();
+        if (response.ok && data.success) {
+          refreshCart();
+        } else {
+          setErrorMessage(data.error || "Failed to remove item.");
+          setSuccessMessage('');
+        }
+      } catch (err) {
+        console.error("Error removing item via updateQuantity:", err);
+        setErrorMessage("Network error when removing item.");
+      }
+      return;
+    }
     try {
       const response = await fetch(`/api/cart/${cart.id}/items/${itemId}`, {
         method: "PUT",
