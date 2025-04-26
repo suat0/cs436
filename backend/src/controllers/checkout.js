@@ -133,7 +133,7 @@ class checkoutController {
         } catch (err) {
           console.error(`Error updating order ${orderId} to in-transit:`, err);
         }
-      }, 5000);
+      }, 30000);
   
       setTimeout(async () => {
         try {
@@ -142,7 +142,7 @@ class checkoutController {
         } catch (err) {
           console.error(`Error updating order ${orderId} to delivered:`, err);
         }
-      }, 10000);
+      }, 50000);
   
     } catch (error) {
       console.error('Checkout Error Details:', error);
