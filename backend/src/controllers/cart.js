@@ -267,6 +267,20 @@ async getCart(req, res) {
   
         if (existing.length > 0) {
           // Update quantity
+          //if stock is exceeded set new quantity to stock available
+          const [productRows] = await db.execute(
+            'SELECT quantity_in_stock FROM Products WHERE id = ?',
+            [item.product_id]
+          );
+          if (productRows.length === 0) {
+            console.error('Associated product not found');
+            continue;
+          }
+          const stockAvailable = productRows[0].quantity_in_stock;
+          if (existing[0].quantity + item.quantity > stockAvailable) {
+            item.quantity = stockAvailable - existing[0].quantity;
+          }
+          // Update the quantity in the database
           const newQuantity = existing[0].quantity + item.quantity;
           await db.execute('UPDATE Cart_Items SET quantity = ? WHERE id = ?', [newQuantity, existing[0].id]);
         } else {
