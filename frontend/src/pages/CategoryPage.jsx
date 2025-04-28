@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faShoppingBag, faHeart, faExchangeAlt, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faShoppingBag, faHeart} from "@fortawesome/free-solid-svg-icons";
 import { useCart } from "../context/CartContext";
 import "../styles.css";
 import "./CategoryPage.css";
@@ -111,8 +111,6 @@ const CategoryPage = () => {
                   <div className="product-actions">
                     <FontAwesomeIcon icon={faShoppingBag} onClick={() => addToCart(product)} />
                     <FontAwesomeIcon icon={faHeart} />
-                    <FontAwesomeIcon icon={faExchangeAlt} />
-                    <FontAwesomeIcon icon={faSearch} />
                   </div>
                   <div className="product-info">
                     <h3>{product.name}</h3>
