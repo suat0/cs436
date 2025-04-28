@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Cart.css";
 import { useAuth } from '../context/AuthContext';
@@ -26,7 +26,7 @@ const CartPage = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
 
   // Function to refresh the cart data from the API
-  const refreshCart = async () => {
+  const refreshCart = useCallback(async () => {
     try {
       const response = await fetch("/api/cart", {
         headers: {
@@ -38,7 +38,6 @@ const CartPage = () => {
       if (response.ok && data.success) {
         setCart(data.cart);
         setCartItems(data.items);
-        
       } else {
         if (response.status === 401) {
           setShowLoginModal(true);
@@ -48,12 +47,10 @@ const CartPage = () => {
       }
     } catch (err) {
       console.error("Error fetching cart:", err);
-
     } finally {
       setLoading(false);
-      refreshCart();
     }
-  };
+  }, []);
 
   useEffect(() => {
     refreshCart();
