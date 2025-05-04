@@ -6,6 +6,7 @@ const authenticate = require('../middleware/authMiddleware').isAuthenticated;
 // GET /api/orders - Get orders for the authenticated user
 router.get('/', authenticate, async (req, res) => {
   try {
+
     const [orders] = await db.query(
       'SELECT * FROM orders WHERE user_id = ? ORDER BY id DESC',
       [req.user.id]
@@ -48,6 +49,8 @@ router.put('/:id/status', authenticate, async (req, res) => {
 
 // routes/orders.js
 router.get('/deliveries', authenticate, async (req, res) => {
+  console.log("Authenticated user:", req.user);
+
   if (!req.user || req.user.role !== 'product_manager') {
     return res.status(403).json({ error: 'Access denied' });
   }
