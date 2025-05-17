@@ -5,9 +5,6 @@ const PDFDocument = require("pdfkit");
 const nodemailer = require('nodemailer');
 
 // === Load and encode logo ===
-const logoPath = path.join(__dirname, '../../../frontend/src/images/logo_white.jpg');
-const logoBase64 = fs.readFileSync(logoPath, { encoding: 'base64' });
-const logoDataURI = `data:image/png;base64,${logoBase64}`;
 
 function generateInvoicePDF(order, itemsResult, callback) {
   const doc = new PDFDocument({ margin: 50 });
@@ -19,7 +16,6 @@ function generateInvoicePDF(order, itemsResult, callback) {
   const invoiceDate = new Date().toLocaleDateString();
 
   // === Logo (top-left) ===
-  doc.image(logoPath, 30, 45, { width: 70 });
 
   // === Header (right) ===
   doc.fontSize(22).text("INVOICE", 400, 50, { align: "right" });
