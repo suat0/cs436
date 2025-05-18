@@ -8,7 +8,9 @@ const Home = () => {
       <section className="hero-section">
         <div className="hero-overlay">
           <h1>Timeless Elegance, Crafted for You.</h1>
-          <button className="shop-now-btn">Shop Now</button>
+          <button onClick={() => {
+            
+          }} className="shop-now-btn">Shop Now</button>
         </div>
       </section>
     </div>
